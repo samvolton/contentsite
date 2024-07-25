@@ -1,0 +1,29 @@
+.header {
+    background-color: #2c3e50;
+    padding: 1rem 0;
+  }
+  
+  .nav-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .nav-list li {
+    margin: 0 1rem;
+  }
+  
+  .nav-list a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .nav-list a:hover, .nav-list li.active a {
+    background-color: #34495e;
+  }
