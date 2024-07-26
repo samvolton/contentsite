@@ -5,9 +5,9 @@ import './Payment.css';
 function Payment() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [amount, setAmount] = useState(300); // Default to 1 Aylık
   const location = useLocation();
   const navigate = useNavigate();
-  const { amount } = location.state || {};
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,12 +42,23 @@ function Payment() {
           />
         </div>
         <div className="form-group">
-          <label>Ödeme Tutarı: {amount} TRY</label>
+          <label htmlFor="subscription">Abonelik Planı:</label>
+          <select
+            id="subscription"
+            value={amount}
+            onChange={(e) => setAmount(parseInt(e.target.value))}
+            required
+          >
+            <option value={300}>1 Aylık - 300 TRY</option>
+            <option value={1500}>6 Aylık - 1500 TRY</option>
+            <option value={3000}>12 Aylık - 3000 TRY</option>
+          </select>
         </div>
         <div className="form-group">
           <h3>Papara Hesap Bilgileri:</h3>
-          <p>Hesap Numarası: 1234567890</p>
-          <p>Hesap Adı: Your Company Name</p>
+          <p><strong>Papara Hesap Numarası:</strong> 1982400478</p>
+          <p><strong>Hesap IBAN Numarası:</strong> TR39 0082 9000 0949 1982 4004 78</p>
+          <p><strong>Ödemenizi Sağlarken Açıklamaya Hiçbir Şey Yazmayınız!</strong></p>
         </div>
         <button type="submit" className="submit-button">Ödemeyi Tamamla</button>
       </form>
