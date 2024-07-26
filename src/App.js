@@ -2,11 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import Anasayfa from './components/Anasayfa';
+import BedavaIcerikler from './components/BedavaIcerikler';
 import Foto from './components/Foto';
 import Video from './components/Video';
-import IcerikKaldirma from './components/IcerikKaldirma';
 import Premium from './components/Premium';
-import './App.css';
+import Payment from './components/Payment';
 
 function App() {
   return (
@@ -14,10 +14,11 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Anasayfa />} />
+          <Route path="/bedava-icerikler" element={<BedavaIcerikler />} />
           <Route path="/foto" element={<Foto />} />
           <Route path="/video" element={<Video />} />
-          <Route path="/icerik-kaldirma" element={<IcerikKaldirma />} />
           <Route path="/premium" element={<Premium />} />
+          <Route path="/payment" element={<Payment />} />
         </Routes>
       </Layout>
     </Router>

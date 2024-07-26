@@ -1,67 +1,55 @@
 import React, { useState } from 'react';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Payment.css';
 
 function Payment() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const stripe = useStripe();
-  const elements = useElements();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { amount } = location.state || {};
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    if (!stripe || !elements) {
-      return;
-    }
-
-    const cardElement = elements.getElement(CardElement);
-
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
-    });
-
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const { data } = await axios.post('/api/create-subscription', {
-        paymentMethodId: paymentMethod.id,
-      });
-
-      const { clientSecret } = data;
-
-      const result = await stripe.confirmCardPayment(clientSecret);
-
-      if (result.error) {
-        setError(result.error.message);
-      } else {
-        // Subscription successful, update user status
-        // Redirect to success page or update UI
-      }
-    } catch (err) {
-      setError('An error occurred. Please try again.');
-    }
-
-    setLoading(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically make an API call to your backend to process the payment
+    // For now, we'll just log the details and navigate back to the home page
+    console.log('Payment submitted:', { name, email, amount });
+    navigate('/');
   };
 
   return (
     <div className="payment">
-      <h2>Premium Üyelik Ödemesi</h2>
+      <h2>Ödeme Bilgileri</h2>
       <form onSubmit={handleSubmit}>
-        <CardElement />
-        {error && <div className="error">{error}</div>}
-        <button type="submit" disabled={loading}>
-          {loading ? 'İşleniyor...' : 'Ödeme Yap'}
-        </button>
+        <div className="form-group">
+          <label htmlFor="name">Ad Soyad:</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">E-posta:</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Ödeme Tutarı: {amount} TRY</label>
+        </div>
+        <div className="form-group">
+          <h3>Papara Hesap Bilgileri:</h3>
+          <p>Hesap Numarası: 1234567890</p>
+          <p>Hesap Adı: Your Company Name</p>
+        </div>
+        <button type="submit" className="submit-button">Ödemeyi Tamamla</button>
       </form>
     </div>
   );

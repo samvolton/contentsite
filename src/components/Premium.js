@@ -1,8 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Premium.css';
 
 function Premium() {
+  const navigate = useNavigate();
+
+  const handleSubscribe = (amount) => {
+    navigate('/payment', { state: { amount } });
+  };
+
   return (
     <div className="premium">
       <h1>Premium Üyelik</h1>
@@ -20,15 +26,19 @@ function Premium() {
         <h2>Fiyatlandırma:</h2>
         <div className="price-options">
           <div className="price-option">
-            <h3>Aylık Plan</h3>
-            <p className="price">₺29.99 / ay</p>
-            <Link to="/payment" className="subscribe-button">Abone Ol</Link>
+            <h3>1 Aylık Plan</h3>
+            <p className="price">300 TRY</p>
+            <button onClick={() => handleSubscribe(300)} className="subscribe-button">Abone Ol</button>
           </div>
           <div className="price-option">
-            <h3>Yıllık Plan</h3>
-            <p className="price">₺299.99 / yıl</p>
-            <p className="savings">(%17 tasarruf)</p>
-            <Link to="/payment" className="subscribe-button">Abone Ol</Link>
+            <h3>6 Aylık Plan</h3>
+            <p className="price">1500 TRY</p>
+            <button onClick={() => handleSubscribe(1500)} className="subscribe-button">Abone Ol</button>
+          </div>
+          <div className="price-option">
+            <h3>12 Aylık Plan</h3>
+            <p className="price">3000 TRY</p>
+            <button onClick={() => handleSubscribe(3000)} className="subscribe-button">Abone Ol</button>
           </div>
         </div>
       </div>

@@ -1,0 +1,51 @@
+.bedava-icerikler {
+    padding: 20px;
+  }
+  
+  .bedava-icerikler h1 {
+    text-align: center;
+    color: #333;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .bedava-icerikler h2 {
+    color: #444;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .content-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .content-item:hover {
+    transform: scale(1.05);
+  }
+  
+  .content-item img,
+  .content-item video {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .content-item h3 {
+    padding: 10px;
+    margin: 0;
+    background-color: #f9f9f9;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #333;
+  }
