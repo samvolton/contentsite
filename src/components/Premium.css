@@ -1,122 +1,116 @@
+/* Premium.css */
+
 .premium {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-  
-  .premium h1 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 1rem;
-  }
-  
-  .premium p {
-    text-align: center;
-    font-size: 1.1rem;
-    color: #34495e;
-    margin-bottom: 2rem;
-  }
-  
-  .premium-features {
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .premium-features h2 {
-    color: #2c3e50;
-    margin-bottom: 1rem;
-  }
-  
-  .premium-features ul {
-    list-style-type: none;
-    padding-left: 0;
-  }
-  
-  .premium-features li {
-    margin-bottom: 0.5rem;
-    padding-left: 1.5rem;
-    position: relative;
-  }
-  
-  .premium-features li::before {
-    content: '✓';
-    color: #27ae60;
-    position: absolute;
-    left: 0;
-    font-weight: bold;
-  }
-  
-  .pricing h2 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 1.5rem;
-  }
-  
-  .price-options {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-  }
-  
-  .price-option {
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 1.5rem;
-    width: 45%;
-    min-width: 250px;
-    margin-bottom: 1rem;
-    text-align: center;
-    transition: all 0.3s ease;
-  }
-  
-  .price-option:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transform: translateY(-5px);
-  }
-  
-  .price-option h3 {
-    color: #2c3e50;
-    margin-bottom: 1rem;
-  }
-  
-  .price {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #3498db;
-    margin-bottom: 0.5rem;
-  }
-  
-  .savings {
-    color: #27ae60;
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
-  
-  .subscribe-button {
-    display: inline-block;
-    background-color: #3498db;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  }
-  
-  .subscribe-button:hover {
-    background-color: #2980b9;
-  }
-  
-  @media (max-width: 768px) {
-    .price-options {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .price-option {
-      width: 100%;
-      max-width: 300px;
-    }
-  }
+  max-width: 900px; /* Increased for more spacious feel */
+  margin: 3rem auto;  /* More vertical space for elegance */
+  padding: 2rem;
+  font-family: "Arial", sans-serif; /* Modern font choice */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle box shadow for depth */
+  border-radius: 8px; /* Rounded corners for a softer look */
+}
+
+.premium h1 {
+  text-align: center;
+  color: #293241; /* Darker, richer color */
+  font-size: 2.5rem; /* Larger for impact */
+  margin-bottom: 1.5rem;
+}
+
+.premium p {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #3d5a80; /* Complementary color to the heading */
+  line-height: 1.6; /* Improves readability */
+  margin-bottom: 2.5rem;
+}
+
+.premium-features {
+  background-color: #e0fbfc; /* Light, calming background */
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.premium-features h2 {
+  color: #293241;
+  margin-bottom: 1rem;
+}
+
+.premium-features ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.premium-features li {
+  margin-bottom: 0.75rem;
+  padding-left: 2rem; /* More space for checkmark */
+  position: relative;
+}
+
+.premium-features li::before {
+  content: '✓';
+  color: #ee6c4d; /* Orange for visual interest */
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  font-size: 1.2rem; /* Larger checkmark */
+}
+
+.pricing h2 {
+  text-align: center;
+  color: #293241;
+  margin-bottom: 2rem;
+}
+
+.price-options {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1.5rem; /* Better spacing between options */
+}
+
+.price-option {
+  background-color: #fff;
+  border: none; /* Remove default border */
+  border-radius: 8px;
+  padding: 2rem;
+  width: calc(33.33% - 1.5rem); /* Responsive width for 3 columns */
+  min-width: 250px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* More subtle hover shadow */
+  transition: all 0.3s ease;
+}
+
+.price-option:hover {
+  transform: translateY(-3px); /* Reduced translateY for smoother hover */
+}
+
+.price-option h3 {
+  color: #293241;
+  margin-bottom: 1rem;
+}
+
+.price {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ee6c4d; /* Orange price */
+  margin-bottom: 0.5rem;
+}
+
+.savings { /* Removed, as it's not relevant in this context */
+}
+
+.subscribe-button {
+  display: inline-block;
+  background-color: #ee6c4d; /* Orange button */
+  color: white;
+  padding: 0.8rem 1.8rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.subscribe-button:hover {
+  background-color: #984b36; /* Darker orange on hover */
+}

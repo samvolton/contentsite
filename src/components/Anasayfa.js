@@ -14,7 +14,7 @@ function Anasayfa() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
+      setCurrentIndex((prevIndex) =>
         prevIndex === freeContent.length - 1 ? 0 : prevIndex + 1
       );
     }, 5000); // Change slide every 5 seconds
@@ -25,7 +25,7 @@ function Anasayfa() {
   const fetchContent = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/content/free');
+      const response = await axios.get('http://localhost:5000/api/media');
       setFreeContent(response.data);
     } catch (error) {
       console.error('Error fetching content:', error);
@@ -46,11 +46,23 @@ function Anasayfa() {
       <div className="slider">
         {freeContent[currentIndex] && (
           <div className="slide">
-            {freeContent[currentIndex].type === 'photo' ? (
-              <img src={freeContent[currentIndex].url} alt={freeContent[currentIndex].title} />
-            ) : (
-              <video src={freeContent[currentIndex].url} autoPlay muted loop />
-            )}
+            <Link to="/premium">
+              {freeContent[currentIndex].type === 'photo' ? (
+                <img
+                  src={`data:${freeContent[currentIndex].contentType};base64,${Buffer.from(freeContent[currentIndex].data).toString('base64')}`}
+                  alt={freeContent[currentIndex].title}
+                  className={freeContent[currentIndex].premium ? 'blurred' : ''}
+                />
+              ) : (
+                <video
+                  src={`data:${freeContent[currentIndex].contentType};base64,${Buffer.from(freeContent[currentIndex].data).toString('base64')}`}
+                  autoPlay
+                  muted
+                  loop
+                  className={freeContent[currentIndex].premium ? 'blurred' : ''}
+                />
+              )}
+            </Link>
             <h3>{freeContent[currentIndex].title}</h3>
           </div>
         )}
