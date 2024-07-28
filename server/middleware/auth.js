@@ -2,8 +2,15 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const auth = async (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '');
   try {
+    const authHeader = req.header('Authorization');
+    if (!authHeader) {
+      // If there's no Authorization header, continue without authentication
+      req.user = null;
+      return next();
+    }
+
+    const token = authHeader.replace('Bearer ', '');
     const decoded = jwt.verify(token, 'secretKey'); // Replace 'secretKey' with your secret key
     const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
 
@@ -11,7 +18,7 @@ const auth = async (req, res, next) => {
       throw new Error();
     }
 
-    req.token = token; // Save the token to the request
+    req.token = token;
     req.user = user;
     next();
   } catch (error) {

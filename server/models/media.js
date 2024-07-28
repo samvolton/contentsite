@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const mediaSchema = new mongoose.Schema({
-  type: String,
-  title: String,
-  data: Buffer,
-  contentType: String,
-  premium: Boolean,
+  filename: { type: String, required: true },
+  contentType: { type: String, required: true },
+  length: { type: Number, required: true },
+  uploadDate: { type: Date, default: Date.now },
+  fileId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+  premium: { type: Boolean, default: false }
 });
 
-const Media = mongoose.model('Media', mediaSchema);
-
-module.exports = Media;
+module.exports = mongoose.model('Media', mediaSchema);
