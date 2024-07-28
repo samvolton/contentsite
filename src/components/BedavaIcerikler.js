@@ -1,61 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Modal from './Modal'; // Import the Modal component
 import './BedavaIcerikler.css';
 
 function BedavaIcerikler() {
-  const [freePhotos, setFreePhotos] = useState([]);
-  const [freeVideos, setFreeVideos] = useState([]);
+  const [content, setContent] = useState({ images: [], videos: [] });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [modalContent, setModalContent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetchFreeContent();
+    fetchContent();
   }, []);
 
-  const fetchFreeContent = async () => {
+  const fetchContent = async () => {
     try {
       setLoading(true);
-      const photosResponse = await axios.get('http://localhost:5000/api/content/free-photo');
-      const videosResponse = await axios.get('http://localhost:5000/api/content/free-video');
-      setFreePhotos(photosResponse.data);
-      setFreeVideos(videosResponse.data);
+      const response = await axios.get('http://localhost:5000/api/media');
+      const images = response.data.filter(item => 
+        item && item.contentType && item.contentType.startsWith('image') && !item.premium
+      );
+      const videos = response.data.filter(item => 
+        item && item.contentType && item.contentType.startsWith('video') && !item.premium
+      );
+      setContent({ images, videos });
     } catch (error) {
-      console.error('Error fetching free content:', error);
+      console.error('Error fetching content:', error);
+      setError('Failed to fetch content. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) {
-    return <div className="loading">Loading...</div>;
-  }
+  const handleContentClick = (item) => {
+    setModalContent(item);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalContent(null);
+  };
+
+  if (loading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="bedava-icerikler">
       <h1>Bedava İçerikler</h1>
       
       <section className="free-photos">
-        <h2>Fotoğraflar</h2>
+        <h2>Fotoğraflar ({content.images.length})</h2>
         <div className="content-grid">
-          {freePhotos.map(photo => (
-            <div key={photo._id} className="content-item">
-              <img src={photo.url} alt={photo.title} />
-              <h3>{photo.title}</h3>
+          {content.images.map((item) => (
+            <div key={item._id} className="content-item" onClick={() => handleContentClick(item)}>
+              <img src={`http://localhost:5000/files/${item.filename}`} alt={item.filename} />
             </div>
           ))}
         </div>
       </section>
 
       <section className="free-videos">
-        <h2>Videolar</h2>
+        <h2>Videolar ({content.videos.length})</h2>
         <div className="content-grid">
-          {freeVideos.map(video => (
-            <div key={video._id} className="content-item">
-              <video src={video.url} controls></video>
-              <h3>{video.title}</h3>
+          {content.videos.map((item) => (
+            <div key={item._id} className="content-item" onClick={() => handleContentClick(item)}>
+              <video src={`http://localhost:5000/files/${item.filename}`} controls></video>
             </div>
           ))}
         </div>
       </section>
+
+      {isModalOpen && <Modal content={modalContent} onClose={closeModal} />}
     </div>
   );
 }
