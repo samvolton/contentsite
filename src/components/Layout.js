@@ -1,44 +1,50 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './Layout.css';
 
 function Layout({ children }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <div className="layout">
       <header className="header">
-        <div className="logo-container">
+        <div className="header-content">
           <Link to="/" className="logo-link">
             <img src="/images/nudecenneti.png" alt="Nude Cenneti Logo" className="logo" />
           </Link>
-          <div className="hamburger-menu" id="hamburger-menu">
+          <button className="menu-toggle" onClick={toggleMenu}>
             <span className="bar"></span>
             <span className="bar"></span>
             <span className="bar"></span>
-          </div>
+          </button>
+          <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
+            <ul>
+              <li><Link to="/" className={location.pathname === '/' ? 'active' : ''}>Ana Sayfa</Link></li>
+              <li><Link to="/bedava-icerikler" className={location.pathname === '/bedava-icerikler' ? 'active' : ''}>Bedava İçerikler</Link></li>
+              <li><Link to="/foto" className={location.pathname === '/foto' ? 'active' : ''}>Fotoğraflar</Link></li>
+              <li><Link to="/video" className={location.pathname === '/video' ? 'active' : ''}>Videolar</Link></li>
+              <li><Link to="/premium" className="premium-link">Premium</Link></li>
+              <li><Link to="/register" className="auth-link">Kayıt Ol</Link></li>
+              <li><Link to="/login" className="auth-link">Giriş</Link></li>
+            </ul>
+          </nav>
         </div>
-        <nav className="nav">
-          <ul>
-            <li><Link to="/">Ana Sayfa</Link></li>
-            <li><Link to="/bedava-icerikler">Bedava İçerikler</Link></li>
-            <li><Link to="/foto">Fotoğraflar</Link></li>
-            <li><Link to="/video">Videolar</Link></li>
-            <li><Link to="/premium">Premium</Link></li>
-          </ul>
-        </nav>
       </header>
       <main className="main-content">{children}</main>
       <footer className="footer">
-        <p>&copy; 2024 Nude Cenneti. Tüm hakları saklıdır.</p>
-        <div className="social-links">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-            <i className="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-            <i className="fab fa-twitter"></i>
-          </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-            <i className="fab fa-instagram"></i>
-          </a>
+        <div className="footer-content">
+          <p>&copy; 2024 Nude Cenneti. Tüm hakları saklıdır.</p>
+          <nav className="footer-nav">
+            <Link to="/hakkimizda">Hakkımızda</Link>
+            <Link to="/gizlilik-politikasi">Gizlilik Politikası</Link>
+            <Link to="/kullanim-sartlari">Kullanım Şartları</Link>
+            <Link to="/iletisim">İletişim</Link>
+          </nav>
         </div>
       </footer>
     </div>

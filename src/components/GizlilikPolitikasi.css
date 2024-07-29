@@ -1,0 +1,18 @@
+.page-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    box-shadow: var(--shadow);
+    border-radius: 8px;
+  }
+  
+  .page-content h1 {
+    color: #1a237e;
+    margin-bottom: 1rem;
+  }
+  
+  .page-content p {
+    margin-bottom: 1rem;
+  }
+  

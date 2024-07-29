@@ -52,18 +52,6 @@ body {
   object-fit: cover;
 }
 
-.content-item img {
-  pointer-events: none; /* Disable clicking on the image */
-}
-
-.content-item video {
-  pointer-events: auto; /* Enable clicking on the video */
-}
-
-.content-item video::-webkit-media-controls {
-  display: none; /* Hide video controls */
-}
-
 .loading,
 .error {
   text-align: center;

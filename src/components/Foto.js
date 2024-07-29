@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import Modal from './Modal'; // Import the Modal component
+import PremiumModal from './PremiumModal'; // Import the PremiumModal component
 import './Foto.css';
 
 function Foto() {
@@ -10,7 +9,6 @@ function Foto() {
   const [error, setError] = useState(null);
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPhotos();
@@ -35,12 +33,8 @@ function Foto() {
   };
 
   const handlePhotoClick = (photo) => {
-    if (photo.premium) {
-      navigate('/premium');
-    } else {
-      setModalContent(photo);
-      setIsModalOpen(true);
-    }
+    setModalContent(photo);
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
@@ -48,11 +42,15 @@ function Foto() {
     setModalContent(null);
   };
 
+  const disableContextMenu = (e) => {
+    e.preventDefault();
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="foto">
+    <div className="foto" onContextMenu={disableContextMenu}>
       <h1>Fotoğraf Galerisi</h1>
       <div className="photo-grid">
         {photos.map(photo => (
@@ -60,14 +58,14 @@ function Foto() {
             <img 
               src={`http://localhost:5000/files/${photo.filename}`} 
               alt={photo.title || 'Untitled'} 
-              className={photo.premium ? 'blurred' : ''} 
+              className="blurred" 
             />
-            {photo.premium && <span className="premium-badge">Premium</span>}
+            <span className="premium-badge">Premium</span>
           </div>
         ))}
       </div>
 
-      {isModalOpen && <Modal content={modalContent} onClose={closeModal} />}
+      {isModalOpen && <PremiumModal content={modalContent} onClose={closeModal} />}
     </div>
   );
 }

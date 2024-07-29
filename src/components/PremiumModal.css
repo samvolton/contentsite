@@ -1,0 +1,133 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  text-align: center;
+  max-width: 700px;
+  width: 90%;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-content h2 {
+  margin: 0 0 1rem;
+  color: var(--primary-color);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.modal-content p {
+  margin: 0 0 1.5rem;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+.modal-content img {
+  max-width: 100%;
+  max-height: 70vh;
+  pointer-events: none; /* Disable interactions with the image */
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem; /* Increased space between buttons */
+}
+
+.close-button, .go-to-premium-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden; /* Ensures hover effects stay within button */
+}
+
+.close-button {
+  background-color: #ff4081; /* Pink for Close button */
+}
+
+.close-button:hover {
+  background-color: #e0336d;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.go-to-premium-button {
+  background-color: #4caf50; /* Green for Go to Premium button */
+}
+
+.go-to-premium-button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.button-text {
+  position: relative;
+  z-index: 1;
+}
+
+.button-text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(0);
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+
+.close-button:hover .button-text::before,
+.go-to-premium-button:hover .button-text::before {
+  transform: scale(1);
+}
+
+.close-button:hover .button-text {
+  color: #fff;
+}
+
+.go-to-premium-button:hover .button-text {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 1rem;
+    width: 90%;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .close-button, .go-to-premium-button {
+    width: 100%;
+    margin: 0;
+  }
+}

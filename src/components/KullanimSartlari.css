@@ -1,0 +1,30 @@
+.kullanim-sartlari {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  box-shadow: var(--shadow);
+  border-radius: 8px;
+}
+
+.kullanim-sartlari h1 {
+  color: #1a237e;
+  margin-bottom: 1rem;
+}
+
+.kullanim-sartlari p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.kullanim-sartlari h2 {
+  color: #1a237e;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .kullanim-sartlari {
+      padding: 1rem;
+  }
+}

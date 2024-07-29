@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import Modal from './Modal'; // Import the Modal component
+import PremiumModal from './PremiumModal'; // Import the PremiumModal component
 import './Video.css';
 
 function Video() {
@@ -10,7 +9,6 @@ function Video() {
   const [error, setError] = useState(null);
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchVideos();
@@ -35,12 +33,8 @@ function Video() {
   };
 
   const handleVideoClick = (video) => {
-    if (video.premium) {
-      navigate('/premium');
-    } else {
-      setModalContent(video);
-      setIsModalOpen(true);
-    }
+    setModalContent(video);
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
@@ -48,26 +42,31 @@ function Video() {
     setModalContent(null);
   };
 
+  const disableContextMenu = (e) => {
+    e.preventDefault();
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="video">
+    <div className="video" onContextMenu={disableContextMenu}>
       <h1>Video Galerisi</h1>
       <div className="video-grid">
         {videos.map(video => (
           <div key={video._id} className="video-item" onClick={() => handleVideoClick(video)}>
-            <video
-              src={`http://localhost:5000/files/${video.filename}`}
-              className={video.premium ? 'blurred' : ''}
+            <video 
+              src={`http://localhost:5000/files/${video.filename}`} 
+              alt={video.title || 'Untitled'} 
+              className="blurred"
               controls
             />
-            {video.premium && <span className="premium-badge">Premium</span>}
+            <span className="premium-badge">Premium</span>
           </div>
         ))}
       </div>
 
-      {isModalOpen && <Modal content={modalContent} onClose={closeModal} />}
+      {isModalOpen && <PremiumModal content={modalContent} onClose={closeModal} />}
     </div>
   );
 }

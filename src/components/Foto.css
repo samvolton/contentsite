@@ -10,6 +10,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  user-select: none; /* Disable text selection */
 }
 
 .foto h1 {
@@ -45,6 +46,8 @@ body {
   height: 250px;
   object-fit: cover;
   transition: transform 0.3s ease;
+  filter: blur(10px); /* Blurred by default */
+  pointer-events: none; /* Disable interactions with blurred images */
 }
 
 .photo-item:hover img {
@@ -60,6 +63,7 @@ body {
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 0.8rem;
+  font-weight: bold;
 }
 
 .loading,
@@ -68,10 +72,6 @@ body {
   font-size: 1.5rem;
   color: var(--secondary-color);
   margin-top: 2rem;
-}
-
-.blurred {
-  filter: blur(10px);
 }
 
 @media (max-width: 768px) {

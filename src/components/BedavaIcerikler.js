@@ -43,6 +43,10 @@ function BedavaIcerikler() {
     setModalContent(null);
   };
 
+  const disableContextMenu = (e) => {
+    e.preventDefault();
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
@@ -66,7 +70,10 @@ function BedavaIcerikler() {
         <div className="content-grid">
           {content.videos.map((item) => (
             <div key={item._id} className="content-item" onClick={() => handleContentClick(item)}>
-              <video src={`http://localhost:5000/files/${item.filename}`} controls></video>
+              <video 
+                src={`http://localhost:5000/files/${item.filename}`} 
+                controls 
+              ></video>
             </div>
           ))}
         </div>
