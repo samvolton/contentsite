@@ -30,8 +30,7 @@ function App() {
           <Route path="/kullanim-sartlari" element={<KullanimSartlari />} />
           <Route path="/iletisim" element={<Iletisim />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login/>} />
-
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Layout>
     </Router>

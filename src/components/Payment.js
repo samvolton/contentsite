@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Payment.css';
 
 function Payment() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [amount, setAmount] = useState(300); // Default to 1 Aylık
-  const location = useLocation();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {

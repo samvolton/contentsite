@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { register } from '../services/authService';
 import './Register.css';
 
 const Register = () => {
@@ -31,6 +32,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Form submitted with data:', formData);
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -40,11 +42,16 @@ const Register = () => {
     setIsSubmitting(true);
     setMessage('');
     try {
-      // Send formData to the backend API
-      // Example: await api.register(formData);
-      setMessage('Registration successful!');
+      const { confirmPassword, ...registerData } = formData;
+      const data = await register(registerData);
+      setMessage('Kayıt Başarılı!');
+      console.log('Registration successful:', data);
+      // Optionally, you can automatically log the user in here
+      // or redirect them to the login page
     } catch (error) {
-      setMessage('Registration failed. Please try again.');
+      console.error('Registration error:', error);
+      setMessage(error.message || 'Kayıt Başarısız. Lütfen tekrar deneyin!');
+      setErrors(error.errors || {});
     }
     setIsSubmitting(false);
   };
@@ -54,7 +61,7 @@ const Register = () => {
       <h1>Kayıt Ol</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">Kullanıcı Adı</label>
           <input
             type="text"
             id="username"
@@ -102,10 +109,10 @@ const Register = () => {
           {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
         </div>
         <button type="submit" className="register-button" disabled={isSubmitting}>
-          {isSubmitting ? 'Registering...' : 'Kayıt Ol'}
+          {isSubmitting ? 'Kaydediliyor...' : 'Kayıt Ol'}
         </button>
       </form>
-      {message && <p className="message">{message}</p>}
+      {message && <p className={message.includes('Başarılı') ? 'success-message' : 'error-message'}>{message}</p>}
     </div>
   );
 }

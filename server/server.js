@@ -9,19 +9,21 @@ const { GridFSBucket } = require('mongodb');
 const auth = require('./middleware/auth');
 const role = require('./middleware/role');
 const filesRouter = require('./routes/files');
+require('dotenv').config();
 
 const app = express();
 const port = 5000;
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/contentSiteDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/contentSiteDB', { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
-app.use(bodyParser.json()); // Ensure JSON parsing is enabled
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors()); // Enable CORS
+app.use(cors());
 app.use('/files', filesRouter);
-
 
 // Initialize GridFSBucket
 const conn = mongoose.connection;
@@ -33,9 +35,10 @@ conn.once('open', () => {
 });
 
 // Routes
-app.use('/upload', auth, upload); // Protect upload route with auth middleware
-app.use('/auth', authRoutes); // Ensure this is included for auth routes
+app.use('/upload', auth, upload);
+app.use('/auth', authRoutes);
 app.use('/files', filesRouter);
+
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Content Site API');
@@ -71,11 +74,15 @@ app.get('/files/:filename', (req, res) => {
   });
 });
 
+// Admin route
+app.get('/admin', auth, role(['admin']), (req, res) => {
+  res.send('This is an admin route!');
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
 
-app.get('/admin', auth, role(['admin']), (req, res) => {
-  res.send('This is an admin route!');
-});
+
+console.log('JWT_SECRET:', process.env.JWT_SECRET);

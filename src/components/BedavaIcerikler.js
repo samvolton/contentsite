@@ -43,9 +43,7 @@ function BedavaIcerikler() {
     setModalContent(null);
   };
 
-  const disableContextMenu = (e) => {
-    e.preventDefault();
-  };
+   
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;

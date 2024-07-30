@@ -1,56 +1,46 @@
 import React, { useState } from 'react';
+import { login } from '../services/authService';
 import './Login.css';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState('');
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const validate = () => {
-    const errors = {};
-    if (!formData.email) errors.email = 'Email is required';
-    if (!formData.password) errors.password = 'Password is required';
-    return errors;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    setIsSubmitting(true);
-    setMessage('');
+    setIsLoading(true);
+    setError('');
+    setSuccessMessage('');
     try {
-      // Send formData to the backend API
-      // Example: await api.login(formData);
-      setMessage('Login successful!');
-    } catch (error) {
-      setMessage('Login failed. Please try again.');
+      const result = await login(formData);
+      console.log('Login successful:', result);
+      setSuccessMessage('Login successful!');
+      // Handle successful login (e.g., redirect or update app state)
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.error) {
+        setError(err.response.data.error);
+      } else {
+        setError(err.message || 'Login failed. Please try again later.');
+      }
+      console.error('Login error:', err);
+    } finally {
+      setIsLoading(false);
     }
-    setIsSubmitting(false);
   };
 
   return (
     <div className="login">
-      <h1>Giriş</h1>
+      <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="email">E-posta</label>
+          <label htmlFor="email">Email</label>
           <input
             type="email"
             id="email"
@@ -59,10 +49,9 @@ const Login = () => {
             onChange={handleChange}
             required
           />
-          {errors.email && <p className="error">{errors.email}</p>}
         </div>
         <div className="form-group">
-          <label htmlFor="password">Şifre</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             id="password"
@@ -71,15 +60,15 @@ const Login = () => {
             onChange={handleChange}
             required
           />
-          {errors.password && <p className="error">{errors.password}</p>}
         </div>
-        <button type="submit" className="login-button" disabled={isSubmitting}>
-          {isSubmitting ? 'Logging in...' : 'Giriş Yap'}
+        <button type="submit" className="login-button" disabled={isLoading}>
+          {isLoading ? 'Logging in...' : 'Login'}
         </button>
       </form>
-      {message && <p className="message">{message}</p>}
+      {error && <p className="error-message">{error}</p>}
+      {successMessage && <p className="success-message">{successMessage}</p>}
     </div>
   );
-}
+};
 
 export default Login;

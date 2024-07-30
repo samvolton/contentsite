@@ -4,40 +4,37 @@ const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, default: 'user' }, 
-  tokens: [{ token: { type: String, required: true } }],
-  resetPasswordToken: String, 
-  resetPasswordExpires: Date 
+  role: { type: String, default: 'user' },
+  tokens: [{ token: { type: String, required: true } }]
 });
-
-
-
 
 userSchema.pre('save', async function (next) {
   const user = this;
   if (user.isModified('password')) {
+    console.log('Hashing password...');
     user.password = await bcrypt.hash(user.password, 8);
+    console.log('Password hashed successfully');
   }
   next();
 });
 
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, 'secretKey'); // Replace 'secretKey' with your secret key
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
   user.tokens = user.tokens.concat({ token });
   await user.save();
   return token;
 };
 
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  const user = this;
-  return bcrypt.compare(candidatePassword, user.password);
+userSchema.methods.toJSON = function () {
+  const user = this.toObject();
+  delete user.password;
+  delete user.tokens;
+  return user;
 };
 
 const User = mongoose.model('User', userSchema);
-
-
-
 
 module.exports = User;
