@@ -21,16 +21,6 @@ function Payment() {
       <h2>Ödeme Bilgileri</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="name">Ad Soyad:</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
           <label htmlFor="email">E-posta:</label>
           <input
             type="email"
@@ -58,6 +48,8 @@ function Payment() {
           <p><strong>Papara Hesap Numarası:</strong> 1982400478</p>
           <p><strong>Hesap IBAN Numarası:</strong> TR39 0082 9000 0949 1982 4004 78</p>
           <p><strong>Ödemenizi Sağlarken Açıklamaya Hiçbir Şey Yazmayınız!</strong></p>
+          <br></br>
+          <p><strong>Ödemeyi YAPMADAN formu DOLDURMANIZ hiçbir işe YARAMAYACAKTIR. Lütfen ÖDEME yaptıktan sonra "ÖDEMEYİ TAMAMLA" butonuna tıklayınız.</strong></p>
         </div>
         <button type="submit" className="submit-button">Ödemeyi Tamamla</button>
       </form>

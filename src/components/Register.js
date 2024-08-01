@@ -61,18 +61,6 @@ const Register = () => {
       <h1>Kayıt Ol</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="username">Kullanıcı Adı</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-          {errors.username && <p className="error">{errors.username}</p>}
-        </div>
-        <div className="form-group">
           <label htmlFor="email">E-posta</label>
           <input
             type="email"
