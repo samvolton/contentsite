@@ -17,7 +17,7 @@ function Payment() {
 
   return (
     <div className="payment">
-      <h2>Ödeme Bilgileri</h2>
+      <h1>Ödeme Bilgileri</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="email">E-posta:</label>
@@ -30,7 +30,7 @@ function Payment() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="subscription">Abonelik Planı:</label>
+          <label htmlFor="subscription">Abonelik Planı:</label> 
           <select
             id="subscription"
             value={amount}
