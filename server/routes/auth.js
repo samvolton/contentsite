@@ -8,11 +8,10 @@ const bcrypt = require('bcryptjs');
 router.post('/register', async (req, res) => {
     try {
         console.log('Received registration request:', req.body);
-        const { username, email, password } = req.body;
+        const {  email, password } = req.body;
 
         // Validate input
         const errors = {};
-        if (!username) errors.username = 'Username is required';
         if (!email) errors.email = 'Email is required';
         if (!password) errors.password = 'Password is required';
 
@@ -21,18 +20,16 @@ router.post('/register', async (req, res) => {
         }
 
         // Check if user already exists
-        const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+        const existingUser = await User.findOne({ $or: [{ email }]  });
         if (existingUser) {
             if (existingUser.email === email) {
                 errors.email = 'Email already in use';
             }
-            if (existingUser.username === username) {
-                errors.username = 'Username already taken';
-            }
+         
             return res.status(400).json({ error: 'User already exists', errors });
         }
 
-        const user = new User({ username, email, password });
+        const user = new User({ email, password });
         await user.save();
         console.log('User saved successfully:', user);
         const token = await user.generateAuthToken();
@@ -102,7 +99,7 @@ router.get('/profile', auth, async (req, res) => {
 // Update User Profile
 router.patch('/profile', auth, async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['username', 'email', 'password'];
+    const allowedUpdates = ['email', 'password'];
     const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
     if (!isValidOperation) {
