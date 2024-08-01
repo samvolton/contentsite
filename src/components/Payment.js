@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import './Payment.css';
 
 function Payment() {
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [amount, setAmount] = useState(300); // Default to 1 Aylık
   const navigate = useNavigate();
@@ -12,7 +11,7 @@ function Payment() {
     e.preventDefault();
     // Here you would typically make an API call to your backend to process the payment
     // For now, we'll just log the details and navigate back to the home page
-    console.log('Payment submitted:', { name, email, amount });
+    console.log('Payment submitted:', { email, amount });
     navigate('/');
   };
 
