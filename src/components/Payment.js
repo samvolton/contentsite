@@ -51,7 +51,7 @@ function Payment() {
           <br></br>
           <p><strong>Ödemeyi YAPMADAN formu DOLDURMANIZ hiçbir işe YARAMAYACAKTIR. Lütfen ÖDEME yaptıktan sonra "ÖDEMEYİ TAMAMLA" butonuna tıklayınız.</strong></p>
         </div>
-        <button type="submit" className="submit-button">Ödemeyi Tamamla</button>
+        <button type="submit" className="submit-button">Ödemeyi Tamamladım Ve Hesap Oluşturma Mailini Almaya Hazırım!</button>
       </form>
     </div>
   );
