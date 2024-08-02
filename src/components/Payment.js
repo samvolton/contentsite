@@ -17,10 +17,15 @@ function Payment() {
       const response = await axios.post('/auth/initiate-payment', { email, amount });
       console.log('Server response:', response.data);
       setMessage(response.data.message);
-      // You can add additional logic here if needed after successful submission
     } catch (error) {
       console.error('Error details:', error);
-      setMessage(error.response?.data?.error || 'An error occurred. Please try again.');
+      if (error.response) {
+        setMessage(`Error: ${error.response.data.error || 'An unknown error occurred'}`);
+      } else if (error.request) {
+        setMessage('No response received from the server. Please try again.');
+      } else {
+        setMessage('An error occurred while sending the request. Please try again.');
+      }
     }
 
     setIsSubmitting(false);
@@ -59,7 +64,7 @@ function Payment() {
           <p><strong>Hesap IBAN Numarası:</strong> TR39 0082 9000 0949 1982 4004 78</p>
           <p><strong>Ödemenizi Sağlarken Açıklamaya Hiçbir Şey Yazmayınız!</strong></p>
           <br />
-          <p><strong>Ödemeyi YAPMADAN formu DOLDURMANIZ hiçbir işe YARAMAYACAKTIR. Lütfen ÖDEME yaptıktan sonra "ÖDEMEYİ TAMAMLA" butonuna tıklayınız.</strong></p>
+          <p><strong>Lütfen önce ödemeyi yapın, ardından formu doldurun ve "ÖDEMEYİ TAMAMLA" butonuna tıklayın. Ödemeniz yönetici tarafından onaylandıktan sonra hesap oluşturma maili alacaksınız.</strong></p>
         </div>
         <button type="submit" className="submit-button" disabled={isSubmitting}>
           {isSubmitting ? 'İşleniyor...' : 'Ödemeyi Tamamladım Ve Hesap Oluşturma Mailini Almaya Hazırım!'}

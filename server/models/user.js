@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false },
   isPaid: { type: Boolean, default: false },
   paymentAmount: { type: Number },
+  paymentStatus: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -24,7 +26,7 @@ userSchema.methods.comparePassword = function(candidatePassword) {
 };
 
 userSchema.methods.generateAuthToken = function() {
-  const token = jwt.sign({ _id: this._id.toString() }, process.env.JWT_SECRET);
+  const token = jwt.sign({ _id: this._id.toString(), role: this.role }, process.env.JWT_SECRET);
   return token;
 };
 
