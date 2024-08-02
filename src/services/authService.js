@@ -11,23 +11,19 @@ const setAuthToken = (token) => {
 };
 
 const register = async (userData) => {
-  try {
-    console.log('Registering user:', { ...userData, password: '[REDACTED]' });
-    const response = await axios.post('/auth/register', userData);
-    console.log('Register response:', response.data);
-    if (response.data.token) {
-      setAuthToken(response.data.token);
+    try {
+      console.log('Registering user:', { ...userData, password: '[REDACTED]' });
+      const response = await axios.post('/auth/register', userData);
+      console.log('Register response:', response.data);
+      if (response.data.token) {
+        setAuthToken(response.data.token);
+      }
+      return response.data;
+    } catch (error) {
+      console.error('Registration error:', error.response?.data || error.message);
+      throw error.response?.data || { error: 'Kayıt başarısız oldu. Lütfen tekrar deneyin.' };
     }
-    return response.data;
-  } catch (error) {
-    console.error('Registration error:', error.response?.data || error.message);
-    if (error.response && error.response.data) {
-      throw error.response.data;
-    } else {
-      throw new Error('Network error, please try again');
-    }
-  }
-};
+  };
 
 
 

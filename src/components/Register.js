@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { register } from '../services/authService';
 import './Register.css';
 
@@ -6,11 +7,22 @@ const Register = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    token: ''
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const tokenFromUrl = queryParams.get('token');
+    if (tokenFromUrl) {
+      setFormData(prevState => ({ ...prevState, token: tokenFromUrl, email: queryParams.get('email') || '' }));
+    }
+  }, [location]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,12 +37,12 @@ const Register = () => {
     if (!formData.email) errors.email = 'Email is required';
     if (!formData.password) errors.password = 'Password is required';
     if (formData.password !== formData.confirmPassword) errors.confirmPassword = 'Passwords do not match';
+    if (!formData.token) errors.token = 'Verification token is missing';
     return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted with data:', formData);
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -43,11 +55,9 @@ const Register = () => {
       const { confirmPassword, ...registerData } = formData;
       const data = await register(registerData);
       setMessage('Kayıt Başarılı!');
-      console.log('Registration successful:', data);
-      // Optionally, you can automatically log the user in here
-      // or redirect them to the login page
+      // Redirect to login page or automatically log the user in
+      navigate('/login');
     } catch (error) {
-      console.error('Registration error:', error);
       setMessage(error.message || 'Kayıt Başarısız. Lütfen tekrar deneyin!');
       setErrors(error.errors || {});
     }
@@ -94,6 +104,11 @@ const Register = () => {
           />
           {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
         </div>
+        <input
+          type="hidden"
+          name="token"
+          value={formData.token}
+        />
         <button type="submit" className="register-button" disabled={isSubmitting}>
           {isSubmitting ? 'Kaydediliyor...' : 'Kayıt Ol'}
         </button>

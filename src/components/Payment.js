@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from '../api/axios';
 import './Payment.css';
 
 function Payment() {
   const [email, setEmail] = useState('');
-  const [amount, setAmount] = useState(300); // Default to 1 Aylık
-  const navigate = useNavigate();
+  const [amount, setAmount] = useState(300);
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically make an API call to your backend to process the payment
-    // For now, we'll just log the details and navigate back to the home page
-    console.log('Payment submitted:', { email, amount });
-    navigate('/');
+    setIsSubmitting(true);
+    setMessage('');
+
+    try {
+      const response = await axios.post('/auth/initiate-payment', { email, amount });
+      console.log('Server response:', response.data);
+      setMessage(response.data.message);
+      // You can add additional logic here if needed after successful submission
+    } catch (error) {
+      console.error('Error details:', error);
+      setMessage(error.response?.data?.error || 'An error occurred. Please try again.');
+    }
+
+    setIsSubmitting(false);
   };
 
   return (
@@ -47,11 +58,14 @@ function Payment() {
           <p><strong>Papara Hesap Numarası:</strong> 1982400478</p>
           <p><strong>Hesap IBAN Numarası:</strong> TR39 0082 9000 0949 1982 4004 78</p>
           <p><strong>Ödemenizi Sağlarken Açıklamaya Hiçbir Şey Yazmayınız!</strong></p>
-          <br></br>
+          <br />
           <p><strong>Ödemeyi YAPMADAN formu DOLDURMANIZ hiçbir işe YARAMAYACAKTIR. Lütfen ÖDEME yaptıktan sonra "ÖDEMEYİ TAMAMLA" butonuna tıklayınız.</strong></p>
         </div>
-        <button type="submit" className="submit-button">Ödemeyi Tamamladım Ve Hesap Oluşturma Mailini Almaya Hazırım!</button>
+        <button type="submit" className="submit-button" disabled={isSubmitting}>
+          {isSubmitting ? 'İşleniyor...' : 'Ödemeyi Tamamladım Ve Hesap Oluşturma Mailini Almaya Hazırım!'}
+        </button>
       </form>
+      {message && <p className="message">{message}</p>}
     </div>
   );
 }

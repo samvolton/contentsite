@@ -4,36 +4,28 @@ const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role: { type: String, default: 'user' },
-  tokens: [{ token: { type: String, required: true } }]
+  password: { type: String },   
+  verificationToken: String,
+  isVerified: { type: Boolean, default: false },
+  isPaid: { type: Boolean, default: false },
+  paymentAmount: { type: Number },
+  createdAt: { type: Date, default: Date.now },
 });
 
-userSchema.pre('save', async function (next) {
-  const user = this;
-  if (user.isModified('password')) {
-    console.log('Hashing password...');
-    user.password = await bcrypt.hash(user.password, 8);
-    console.log('Password hashed successfully');
+userSchema.pre('save', async function(next) {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
   }
   next();
 });
 
-userSchema.methods.generateAuthToken = async function () {
-  const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
-  user.tokens = user.tokens.concat({ token });
-  await user.save();
+userSchema.methods.comparePassword = function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+userSchema.methods.generateAuthToken = function() {
+  const token = jwt.sign({ _id: this._id.toString() }, process.env.JWT_SECRET);
   return token;
 };
 
-userSchema.methods.toJSON = function () {
-  const user = this.toObject();
-  delete user.password;
-  delete user.tokens;
-  return user;
-};
-
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);
