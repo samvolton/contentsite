@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import { login, logout, checkAuth, setAuthToken } from '../services/authService';
 
 export const AuthContext = createContext();
 
@@ -10,58 +10,75 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('authToken');
+    const initAuth = async () => {
+      const token = localStorage.getItem('token');
       if (token) {
-        try {
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          const response = await axios.get('http://localhost:5000/auth/profile');
-          const userData = response.data;
-          setIsAuthenticated(true);
-          setUser(userData);
-          setIsPremium(userData.isPaid);
-        } catch (error) {
-          console.error('Failed to get user profile:', error);
-          localStorage.removeItem('authToken');
-          delete axios.defaults.headers.common['Authorization'];
-        }
+        setAuthToken(token);
       }
-      setLoading(false);
+      try {
+        const { isAuthenticated, user } = await checkAuth();
+        setIsAuthenticated(isAuthenticated);
+        setUser(user);
+        setIsPremium(user?.isPaid || false);
+      } catch (error) {
+        console.error('Error during authentication check:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-  
-    checkAuth();
-  }, []);
-  
 
-  const login = async (email, password) => {
+    initAuth();
+  }, []);
+
+  const handleLogin = async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:5000/auth/login', { email, password });
-      const { token, user } = response.data;
-      localStorage.setItem('authToken', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setIsAuthenticated(true);
-      setUser(user);
-      setIsPremium(user.isPaid);
-      console.log('Login successful. User:', user, 'isPremium:', user.isPaid);
-      return true;
+      const result = await login({ email, password });
+      if (result.success) {
+        setIsAuthenticated(true);
+        setUser(result.user);
+        setIsPremium(result.user.isPaid || false);
+        return true;
+      } else {
+        console.error('Login failed:', result.error);
+        return false;
+      }
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('Login error:', error);
       return false;
     }
   };
-  
-  const logout = () => {
-    localStorage.removeItem('authToken');
-    delete axios.defaults.headers.common['Authorization'];
-    setIsAuthenticated(false);
-    setUser(null);
-    setIsPremium(false);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setIsAuthenticated(false);
+      setUser(null);
+      setIsPremium(false);
+      localStorage.removeItem('token');
+      setAuthToken(null);
+    }
   };
-  
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, user, setUser, isPremium, setIsPremium, login, logout, loading }}>
+    <AuthContext.Provider 
+      value={{ 
+        isAuthenticated, 
+        setIsAuthenticated, 
+        user, 
+        setUser, 
+        isPremium, 
+        setIsPremium, 
+        login: handleLogin, 
+        logout: handleLogout, 
+        loading 
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
+
+export default AuthProvider;

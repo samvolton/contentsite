@@ -25,10 +25,9 @@ const Login = () => {
       const success = await login(formData.email, formData.password);
       if (success) {
         setSuccessMessage('Login successful!');
-        // Redirect to home page after successful login
         setTimeout(() => {
           navigate('/');
-        }, 1500); // Redirect after 1.5 seconds to show the success message
+        }, 1500);
       } else {
         setError('Login failed. Please check your credentials and try again.');
       }

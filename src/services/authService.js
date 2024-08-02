@@ -11,21 +11,19 @@ const setAuthToken = (token) => {
 };
 
 const register = async (userData) => {
-    try {
-      console.log('Registering user:', { ...userData, password: '[REDACTED]' });
-      const response = await axios.post('/auth/register', userData);
-      console.log('Register response:', response.data);
-      if (response.data.token) {
-        setAuthToken(response.data.token);
-      }
-      return response.data;
-    } catch (error) {
-      console.error('Registration error:', error.response?.data || error.message);
-      throw error.response?.data || { error: 'Kayıt başarısız oldu. Lütfen tekrar deneyin.' };
+  try {
+    console.log('Registering user:', { ...userData, password: '[REDACTED]' });
+    const response = await axios.post('/auth/register', userData);
+    console.log('Register response:', response.data);
+    if (response.data.token) {
+      setAuthToken(response.data.token);
     }
-  };
-
-
+    return response.data;
+  } catch (error) {
+    console.error('Registration error:', error.response?.data || error.message);
+    throw error.response?.data || { error: 'Kayıt başarısız oldu. Lütfen tekrar deneyin.' };
+  }
+};
 
 const login = async (credentials) => {
   try {
@@ -36,23 +34,23 @@ const login = async (credentials) => {
     if (response.data.token) {
       console.log('Token received, setting auth token');
       setAuthToken(response.data.token);
+      return { success: true, user: response.data.user };
     } else {
       console.warn('No token received in login response');
+      return { success: false, error: 'No token received' };
     }
-
-    return response.data;
   } catch (error) {
     console.error('Login error:', error);
     if (error.response) {
       console.error('Error response:', error.response.data);
       console.error('Error status:', error.response.status);
-      throw error.response.data;
+      return { success: false, error: error.response.data.error || 'Login failed' };
     } else if (error.request) {
       console.error('No response received:', error.request);
-      throw new Error('No response from server');
+      return { success: false, error: 'No response from server' };
     } else {
       console.error('Error setting up request:', error.message);
-      throw new Error('Error setting up request');
+      return { success: false, error: 'Error setting up request' };
     }
   }
 };
@@ -62,7 +60,6 @@ const logout = async () => {
     console.log('Logging out user');
     await axios.post('/auth/logout');
     setAuthToken(null);
-    localStorage.removeItem('token');
   } catch (error) {
     console.error('Logout error:', error.response?.data || error.message);
   }
@@ -80,8 +77,6 @@ const getProfile = async () => {
   }
 };
 
-
-
 const updateProfile = async (userData) => {
   try {
     console.log('Updating user profile:', { ...userData, password: '[REDACTED]' });
@@ -94,11 +89,34 @@ const updateProfile = async (userData) => {
   }
 };
 
+const checkAuth = async () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      setAuthToken(token);
+      const response = await axios.get('/auth/profile');
+      
+      if (response.data) {
+        return { isAuthenticated: true, user: response.data };
+      } else {
+        throw new Error('Invalid user data received');
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      localStorage.removeItem('token');
+      setAuthToken(null);
+      return { isAuthenticated: false, user: null };
+    }
+  }
+  return { isAuthenticated: false, user: null };
+};
+
 export { 
   setAuthToken, 
   register, 
   login, 
   logout, 
   getProfile, 
-  updateProfile
+  updateProfile,
+  checkAuth
 };

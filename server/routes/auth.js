@@ -116,7 +116,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = await user.generateAuthToken();
-    res.send({ user, token });
+    res.send({ user: user.toJSON(), token });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).send({ error: 'Server error during login' });

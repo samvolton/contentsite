@@ -30,4 +30,11 @@ userSchema.methods.generateAuthToken = function() {
   return token;
 };
 
+userSchema.methods.toJSON = function() {
+  const user = this.toObject();
+  delete user.password;
+  delete user.verificationToken;
+  return user;
+};
+
 module.exports = mongoose.model('User', userSchema);
