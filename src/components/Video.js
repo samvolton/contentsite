@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import PremiumModal from './PremiumModal'; // Import the PremiumModal component
+import PremiumModal from './PremiumModal';
+import { AuthContext } from '../context/authContext';
 import './Video.css';
 
 function Video() {
@@ -9,10 +10,13 @@ function Video() {
   const [error, setError] = useState(null);
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isAuthenticated, isPremium } = useContext(AuthContext);
 
   useEffect(() => {
     fetchVideos();
-  }, []);
+  }, [isAuthenticated, isPremium]);
+
+  console.log('Auth status:', isAuthenticated, 'Premium status:', isPremium);
 
   const fetchVideos = async () => {
     try {
@@ -33,7 +37,11 @@ function Video() {
   };
 
   const handleVideoClick = (video) => {
-    setModalContent(video);
+    if (isAuthenticated && isPremium) {
+      setModalContent(video);
+    } else {
+      setModalContent({ type: 'premium' }); // Provide a type to handle premium modal content
+    }
     setIsModalOpen(true);
   };
 
@@ -57,16 +65,22 @@ function Video() {
           <div key={video._id} className="video-item" onClick={() => handleVideoClick(video)}>
             <video 
               src={`http://localhost:5000/files/${video.filename}`} 
-              alt={video.title || 'Untitled'} 
-              className="blurred"
+              className={isAuthenticated && isPremium ? '' : 'blurred'}
               controls
             />
-            <span className="premium-badge">Premium</span>
+            {(!isAuthenticated || !isPremium) && <span className="premium-badge">Premium</span>}
           </div>
         ))}
       </div>
 
-      {isModalOpen && <PremiumModal content={modalContent} onClose={closeModal} />}
+      {isModalOpen && (
+        <PremiumModal 
+          content={modalContent} 
+          onClose={closeModal} 
+          isAuthenticated={isAuthenticated} 
+          isPremium={isPremium} 
+        />
+      )}
     </div>
   );
 }

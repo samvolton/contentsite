@@ -62,6 +62,7 @@ const logout = async () => {
     console.log('Logging out user');
     await axios.post('/auth/logout');
     setAuthToken(null);
+    localStorage.removeItem('token');
   } catch (error) {
     console.error('Logout error:', error.response?.data || error.message);
   }

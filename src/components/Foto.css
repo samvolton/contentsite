@@ -46,8 +46,11 @@ body {
   height: 250px;
   object-fit: cover;
   transition: transform 0.3s ease;
-  filter: blur(10px); /* Blurred by default */
   pointer-events: none; /* Disable interactions with blurred images */
+}
+
+.photo-item img.blurred {
+  filter: blur(10px);
 }
 
 .photo-item:hover img {

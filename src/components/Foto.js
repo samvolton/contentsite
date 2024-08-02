@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import PremiumModal from './PremiumModal'; // Import the PremiumModal component
+import PremiumModal from './PremiumModal';
+import { AuthContext } from '../context/authContext';
 import './Foto.css';
 
 function Foto() {
@@ -9,11 +10,14 @@ function Foto() {
   const [error, setError] = useState(null);
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isAuthenticated, isPremium } = useContext(AuthContext);
 
   useEffect(() => {
     fetchPhotos();
-  }, []);
+  }, [isAuthenticated, isPremium]);
 
+  console.log('Auth status:', isAuthenticated, 'Premium status:', isPremium);
+  
   const fetchPhotos = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/media');
@@ -33,7 +37,11 @@ function Foto() {
   };
 
   const handlePhotoClick = (photo) => {
-    setModalContent(photo);
+    if (isAuthenticated && isPremium) {
+      setModalContent(photo);
+    } else {
+      setModalContent({ type: 'premium' }); // Provide a type to handle premium modal content
+    }
     setIsModalOpen(true);
   };
 
@@ -58,14 +66,21 @@ function Foto() {
             <img 
               src={`http://localhost:5000/files/${photo.filename}`} 
               alt={photo.title || 'Untitled'} 
-              className="blurred" 
+              className={isAuthenticated && isPremium ? '' : 'blurred'}
             />
-            <span className="premium-badge">Premium</span>
+            {(!isAuthenticated || !isPremium) && <span className="premium-badge">Premium</span>}
           </div>
         ))}
       </div>
 
-      {isModalOpen && <PremiumModal content={modalContent} onClose={closeModal} />}
+      {isModalOpen && (
+        <PremiumModal 
+          content={modalContent} 
+          onClose={closeModal} 
+          isAuthenticated={isAuthenticated} 
+          isPremium={isPremium} 
+        />
+      )}
     </div>
   );
 }

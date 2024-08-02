@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {AuthProvider} from './context/authContext';
 import Layout from './components/Layout';
 import Anasayfa from './components/Anasayfa';
 import BedavaIcerikler from './components/BedavaIcerikler';
@@ -16,6 +17,7 @@ import Login from './components/Login';
 
 function App() {
   return (
+    <AuthProvider>
     <Router>
       <Layout>
         <Routes>
@@ -34,6 +36,7 @@ function App() {
         </Routes>
       </Layout>
     </Router>
+    </AuthProvider>
   );
 }
 

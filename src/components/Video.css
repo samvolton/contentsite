@@ -45,9 +45,12 @@ body {
   width: 100%;
   height: 250px;
   object-fit: cover;
-  filter: blur(10px); /* Blurred by default */
   transition: transform 0.3s ease;
   pointer-events: none; /* Disable interactions with blurred videos */
+}
+
+.video-item video.blurred {
+  filter: blur(10px);
 }
 
 .video-item:hover video {

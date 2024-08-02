@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { AuthContext } from '../context/authContext';
 import './Layout.css';
 
 function Layout({ children }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, logout, isPremium, loading } = useContext(AuthContext);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const handleLogout = () => {
+    logout();
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="layout">
@@ -17,20 +22,24 @@ function Layout({ children }) {
           <Link to="/" className="logo-link">
             <img src="/images/nudecenneti.png" alt="Nude Cenneti Logo" className="logo" />
           </Link>
-          <button className="menu-toggle" onClick={toggleMenu}>
-            <span className="bar"></span>
-            <span className="bar"></span>
-            <span className="bar"></span>
-          </button>
-          <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
+          <nav className="nav">
             <ul>
               <li><Link to="/" className={location.pathname === '/' ? 'active' : ''}>Ana Sayfa</Link></li>
               <li><Link to="/bedava-icerikler" className={location.pathname === '/bedava-icerikler' ? 'active' : ''}>Bedava İçerikler</Link></li>
               <li><Link to="/foto" className={location.pathname === '/foto' ? 'active' : ''}>Fotoğraflar</Link></li>
               <li><Link to="/video" className={location.pathname === '/video' ? 'active' : ''}>Videolar</Link></li>
               <li><Link to="/premium" className="premium-link">Premium</Link></li>
-              <li><Link to="/register" className="auth-link">Kayıt Ol</Link></li>
-              <li><Link to="/login" className="auth-link">Giriş</Link></li>
+              {!isAuthenticated ? (
+                <>
+                  <li><Link to="/register" className="auth-link">Kayıt Ol</Link></li>
+                  <li><Link to="/login" className="auth-link">Giriş</Link></li>
+                </>
+              ) : (
+                <>
+                  <li><span className="user-status">{isPremium ? 'Premium Üye' : 'Üye'}</span></li>
+                  <li><button onClick={handleLogout} className="auth-link logout-button">Çıkış Yap</button></li>
+                </>
+              )}
             </ul>
           </nav>
         </div>

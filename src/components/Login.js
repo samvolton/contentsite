@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { login } from '../services/authService';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/authContext';
 import './Login.css';
 
 const Login = () => {
@@ -7,6 +8,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,16 +22,18 @@ const Login = () => {
     setError('');
     setSuccessMessage('');
     try {
-      const result = await login(formData);
-      console.log('Login successful:', result);
-      setSuccessMessage('Login successful!');
-      // Handle successful login (e.g., redirect or update app state)
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.error) {
-        setError(err.response.data.error);
+      const success = await login(formData.email, formData.password);
+      if (success) {
+        setSuccessMessage('Login successful!');
+        // Redirect to home page after successful login
+        setTimeout(() => {
+          navigate('/');
+        }, 1500); // Redirect after 1.5 seconds to show the success message
       } else {
-        setError(err.message || 'Login failed. Please try again later.');
+        setError('Login failed. Please check your credentials and try again.');
       }
+    } catch (err) {
+      setError('An error occurred during login. Please try again later.');
       console.error('Login error:', err);
     } finally {
       setIsLoading(false);
