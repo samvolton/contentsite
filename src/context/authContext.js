@@ -41,7 +41,8 @@ export const AuthProvider = ({ children }) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setIsAuthenticated(true);
       setUser(user);
-      setIsPremium(user.isPaid); // Make sure this matches the property name from your backend
+      setIsPremium(user.isPaid);
+      console.log('Login successful. User:', user, 'isPremium:', user.isPaid);
       return true;
     } catch (error) {
       console.error('Login failed:', error);

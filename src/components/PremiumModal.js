@@ -5,10 +5,6 @@ import { useNavigate } from 'react-router-dom';
 function PremiumModal({ content, onClose, isAuthenticated, isPremium }) {
   const navigate = useNavigate();
 
-  if (isAuthenticated && isPremium) {
-    return null;  
-  }
-
   const goToPremium = () => {
     onClose();
     navigate('/premium');
@@ -38,10 +34,10 @@ function PremiumModal({ content, onClose, isAuthenticated, isPremium }) {
         {isAuthenticated && isPremium && content && (
           <>
             <p>Bu içeriği görüntüleyebilirsiniz.</p>
-            {content.contentType.startsWith('image') && (
+            {content.contentType && content.contentType.startsWith('image') && (
               <img src={`http://localhost:5000/files/${content.filename}`} alt={content.filename} />
             )}
-            {content.contentType.startsWith('video') && (
+            {content.contentType && content.contentType.startsWith('video') && (
               <video src={`http://localhost:5000/files/${content.filename}`} controls />
             )}
           </>

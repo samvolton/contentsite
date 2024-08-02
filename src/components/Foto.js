@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import PremiumModal from './PremiumModal';
 import { AuthContext } from '../context/authContext';
@@ -12,13 +12,7 @@ function Foto() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isAuthenticated, isPremium } = useContext(AuthContext);
 
-  useEffect(() => {
-    fetchPhotos();
-  }, [isAuthenticated, isPremium]);
-
-  console.log('Auth status:', isAuthenticated, 'Premium status:', isPremium);
-  
-  const fetchPhotos = async () => {
+  const fetchPhotos = useCallback(async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/media');
       const photos = response.data.filter(item => 
@@ -34,13 +28,18 @@ function Foto() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchPhotos();
+  }, [fetchPhotos, isAuthenticated, isPremium]);
+
 
   const handlePhotoClick = (photo) => {
     if (isAuthenticated && isPremium) {
       setModalContent(photo);
     } else {
-      setModalContent({ type: 'premium' }); // Provide a type to handle premium modal content
+      setModalContent({ type: 'premium' });
     }
     setIsModalOpen(true);
   };

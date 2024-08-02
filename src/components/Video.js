@@ -16,7 +16,6 @@ function Video() {
     fetchVideos();
   }, [isAuthenticated, isPremium]);
 
-  console.log('Auth status:', isAuthenticated, 'Premium status:', isPremium);
 
   const fetchVideos = async () => {
     try {
