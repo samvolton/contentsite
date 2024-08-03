@@ -10,6 +10,7 @@ const setAuthToken = (token) => {
   }
 };
 
+
 const register = async (userData) => {
   try {
     console.log('Registering user:', { ...userData, password: '[REDACTED]' });
@@ -34,7 +35,7 @@ const login = async (credentials) => {
     if (response.data.token) {
       console.log('Token received, setting auth token');
       setAuthToken(response.data.token);
-      return { success: true, user: response.data.user };
+      return { success: true, user: response.data.user, token: response.data.token };
     } else {
       console.warn('No token received in login response');
       return { success: false, error: 'No token received' };
@@ -52,16 +53,6 @@ const login = async (credentials) => {
       console.error('Error setting up request:', error.message);
       return { success: false, error: 'Error setting up request' };
     }
-  }
-};
-
-const logout = async () => {
-  try {
-    console.log('Logging out user');
-    await axios.post('/auth/logout');
-    setAuthToken(null);
-  } catch (error) {
-    console.error('Logout error:', error.response?.data || error.message);
   }
 };
 
@@ -97,7 +88,7 @@ const checkAuth = async () => {
       const response = await axios.get('/auth/profile');
       
       if (response.data) {
-        return { isAuthenticated: true, user: response.data };
+        return { isAuthenticated: true, user: response.data, token };
       } else {
         throw new Error('Invalid user data received');
       }
@@ -105,10 +96,39 @@ const checkAuth = async () => {
       console.error('Auth check failed:', error);
       localStorage.removeItem('token');
       setAuthToken(null);
-      return { isAuthenticated: false, user: null };
+      return { isAuthenticated: false, user: null, token: null };
     }
   }
-  return { isAuthenticated: false, user: null };
+  return { isAuthenticated: false, user: null, token: null };
+};
+
+
+const setupAxiosInterceptors = (logout) => {
+  axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response && error.response.status === 401) {
+        if (localStorage.getItem('token')) {
+          logout();
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
+};
+
+const logout = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      await axios.post('/auth/logout');
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+  } finally {
+    localStorage.removeItem('token');
+    setAuthToken(null);
+  }
 };
 
 export { 
@@ -118,5 +138,6 @@ export {
   logout, 
   getProfile, 
   updateProfile,
-  checkAuth
+  checkAuth,
+  setupAxiosInterceptors  
 };

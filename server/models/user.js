@@ -3,38 +3,71 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String },   
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 7
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  isPaid: {
+    type: Boolean,
+    default: false
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['pending', 'completed', 'failed'],
+    default: 'pending'
+  },
+  paymentAmount: {
+    type: Number
+  },
   verificationToken: String,
-  isVerified: { type: Boolean, default: false },
-  isPaid: { type: Boolean, default: false },
-  paymentAmount: { type: Number },
-  paymentStatus: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
-  role: { type: String, enum: ['user', 'admin'], default: 'user' },
-  createdAt: { type: Date, default: Date.now },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
+  tokens: [{
+    token: {
+      type: String,
+      required: true
+    }
+  }]
 });
 
-userSchema.pre('save', async function(next) {
-  if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 10);
+userSchema.methods.generateAuthToken = async function() {
+  const user = this;
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
+  
+  user.tokens = user.tokens || [];
+  user.tokens.push({ token });
+  
+  await user.save();
+  return token;
+};
+
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+userSchema.pre('save', async function (next) {
+  const user = this;
+  if (user.isModified('password')) {
+    user.password = await bcrypt.hash(user.password, 8);
   }
   next();
 });
 
-userSchema.methods.comparePassword = function(candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
-};
+const User = mongoose.model('User', userSchema);
 
-userSchema.methods.generateAuthToken = function() {
-  const token = jwt.sign({ _id: this._id.toString(), role: this.role }, process.env.JWT_SECRET);
-  return token;
-};
-
-userSchema.methods.toJSON = function() {
-  const user = this.toObject();
-  delete user.password;
-  delete user.verificationToken;
-  return user;
-};
-
-module.exports = mongoose.model('User', userSchema);
+module.exports = User;

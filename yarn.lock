@@ -1917,6 +1917,24 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
+"@tinyhttp/cookie-parser@^2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@tinyhttp/cookie-parser/-/cookie-parser-2.0.6.tgz#1e52d4f0d28509e5486f9d16f0fd77d912e38f2d"
+  integrity sha512-hLcFr3ml6MBU71URUutvzh8p0PgqGpmTMcorUrRS+Fck0/q3tzScE+ghhocgIoSx/F6GRtS/TYJkJrjL/ickBw==
+  dependencies:
+    "@tinyhttp/cookie" ">=2"
+    "@tinyhttp/cookie-signature" ">=2"
+
+"@tinyhttp/cookie-signature@>=2":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@tinyhttp/cookie-signature/-/cookie-signature-2.1.1.tgz#ae2caad6aec4ec51d42e7d852ae34a04196d5138"
+  integrity sha512-VDsSMY5OJfQJIAtUgeQYhqMPSZptehFSfvEEtxr+4nldPA8IImlp3QVcOVuK985g4AFR4Hl1sCbWCXoqBnVWnw==
+
+"@tinyhttp/cookie@>=2":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@tinyhttp/cookie/-/cookie-2.1.1.tgz#50ad664f732357a466a14cdc888e88e80dc3440e"
+  integrity sha512-h/kL9jY0e0Dvad+/QU3efKZww0aTvZJslaHj3JTPmIPC9Oan9+kYqmh3M6L5JUQRuTJYFK2nzgL2iJtH2S+6dA==
+
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"

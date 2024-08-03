@@ -116,7 +116,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = await user.generateAuthToken();
-    res.send({ user: user.toJSON(), token });
+    res.send({ success: true, user: user.toJSON(), token });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).send({ error: 'Server error during login' });
@@ -187,4 +187,3 @@ router.patch('/profile', auth, async (req, res) => {
 });
 
 module.exports = router;
-
