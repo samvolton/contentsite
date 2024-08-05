@@ -162,6 +162,19 @@ router.post('/verify-payment', auth, async (req, res) => {
   }
 });
 
+router.get('/admin-id', auth, async (req, res) => {
+  try {
+    const admin = await User.findOne({ role: 'admin' });
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+    res.json({ adminId: admin._id });
+  } catch (error) {
+    console.error('Error fetching admin ID:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get User Profile
 router.get('/profile', auth, async (req, res) => {
     res.send(req.user);

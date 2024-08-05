@@ -1,37 +1,46 @@
 const express = require('express');
-const User = require('../models/user');
-const auth = require('../middleware/auth');
-const { sendPaymentConfirmationEmail } = require('../services/emailService');
 const router = express.Router();
+const Chat = require('../models/chat');
+const auth = require('../middleware/auth');
+const role = require('../middleware/role');
+const User = require('../models/user');
 
-// Admin route to verify payment
-router.post('/verify-payment', auth, async (req, res) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Unauthorized' });
-  }
-
+// Get all users (for admin chat interface)
+router.get('/users', auth, role(['admin']), async (req, res) => {
   try {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    user.paymentStatus = 'completed';
-    user.isPaid = true;
-    await user.save();
-
-    // Send payment confirmation email
-    await sendPaymentConfirmationEmail(user.email, user.verificationToken);
-
-    res.status(200).json({ message: 'Payment verified successfully and confirmation email sent' });
+    const users = await User.find({}, 'email');
+    res.json(users);
   } catch (error) {
-    console.error('Payment verification error:', error);
-    res.status(500).json({ error: 'Server error during payment verification' });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-// Add more admin routes as needed
+// Get flagged messages
+router.get('/flagged-messages', auth, role(['admin']), async (req, res) => {
+  try {
+    const flaggedMessages = await Chat.find({ flagged: true });
+    res.json(flaggedMessages);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Moderate a message
+router.post('/moderate-message/:messageId', auth, role(['admin']), async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const { action } = req.body;
+
+    if (action === 'approve') {
+      await Chat.findByIdAndUpdate(messageId, { flagged: false });
+    } else if (action === 'delete') {
+      await Chat.findByIdAndDelete(messageId);
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 module.exports = router;

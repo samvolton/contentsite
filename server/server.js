@@ -6,14 +6,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const http = require('http');
+const socketIo = require('socket.io');
 const upload = require('./upload');
 const authRoutes = require('./routes/auth');
 const Media = require('./models/media');
+const Chat = require('./models/chat'); 
 const { GridFSBucket } = require('mongodb');
 const auth = require('./middleware/auth');
 const role = require('./middleware/role');
 const filesRouter = require('./routes/files');
 const adminRoutes = require('./routes/admin');
+const chatRoutes = require('./routes/chat');
 
 console.log('Server starting...');
 console.log('MAILGUN_API_KEY:', process.env.MAILGUN_API_KEY);
@@ -21,6 +25,14 @@ console.log('MAILGUN_DOMAIN:', process.env.MAILGUN_DOMAIN);
 console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL,
+    methods: ["GET", "POST"]
+  }
+});
+
 const port = 5000;
 
 // Connect to MongoDB
@@ -31,10 +43,44 @@ mongoose.connect('mongodb://localhost:27017/contentSiteDB', { useNewUrlParser: t
 // Middleware 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());  // Enable CORS for all routes
+app.use(cors());   
 app.use(express.json());
 app.use('/files', filesRouter); 
 app.use('/admin', auth, adminRoutes);
+app.use('/chat', chatRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Socket.io connection
+io.on('connection', (socket) => {
+  console.log('New client connected');
+
+  socket.on('join', (userId) => {
+    socket.join(userId);
+    console.log(`User ${userId} joined`);
+  });
+
+  socket.on('sendMessage', async (data) => {
+    try {
+      const { sender, receiver, message, attachment } = data;
+      const chat = new Chat({ sender, receiver, message, attachment });
+      await chat.save();
+      io.to(receiver).emit('newMessage', chat);
+      socket.emit('messageSent', chat);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      socket.emit('messageError', { error: 'Failed to send message' });
+    }
+  });
+
+  socket.on('typing', (data) => {
+    const { sender, receiver } = data;
+    socket.to(receiver).emit('userTyping', { sender });
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
 
 // Initialize GridFSBucket
 const conn = mongoose.connection;
@@ -61,7 +107,7 @@ app.get('/api/media', async (req, res) => {
     res.json(media);
   } catch (error) {
     console.error('Error fetching media:', error);
-    res.status(500).send(error); // Send a 500 error if there's an issue fetching media
+    res.status(500).send(error);
   }
 });
 
@@ -90,8 +136,8 @@ app.get('/admin', auth, role(['admin']), (req, res) => {
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack); // Log the error for debugging
-  res.status(500).send('Something broke!'); // Send a generic error response to the client
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 app.use((err, req, res, next) => {
@@ -102,9 +148,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-
 // Start the server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
 

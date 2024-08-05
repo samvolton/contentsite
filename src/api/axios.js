@@ -21,6 +21,14 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
+    if (error.response) {
+      console.error('Response error:', error.response.data);
+      console.error('Status:', error.response.status);
+    } else if (error.request) {
+      console.error('Request error:', error.request);
+    } else {
+      console.error('Error:', error.message);
+    }
     if (error.response && error.response.status === 401 && !error.config._retry) {
       localStorage.removeItem('token');
       window.location.href = '/login';
