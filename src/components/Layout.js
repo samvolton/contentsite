@@ -25,7 +25,6 @@ function Layout({ children }) {
           <nav className="nav">
             <ul>
               <li><Link to="/" className={location.pathname === '/' ? 'active' : ''}>Ana Sayfa</Link></li>
-              <li><Link to="/bedava-icerikler" className={location.pathname === '/bedava-icerikler' ? 'active' : ''}>Bedava İçerikler</Link></li>
               <li><Link to="/foto" className={location.pathname === '/foto' ? 'active' : ''}>Fotoğraflar</Link></li>
               <li><Link to="/video" className={location.pathname === '/video' ? 'active' : ''}>Videolar</Link></li>
               <li><Link to="/premium" className="premium-link">Premium</Link></li>
