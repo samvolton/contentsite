@@ -95,7 +95,6 @@ function Anasayfa() {
       </section>
 
       <div className="navigation">
-        <Link to="/bedava-icerikler" className="nav-button">Tüm Bedava İçerikler</Link>
         <Link to="/premium" className="nav-button">Premium İçerikler</Link>
       </div>
 

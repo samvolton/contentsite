@@ -35,7 +35,7 @@ function Layout({ children }) {
                 </>
               ) : (
                 <>
-                  <li><span className="user-status">{isPremium ? 'Premium Üye' : 'Üye'}</span></li>
+                  <li><span className="user-status">{isPremium ? 'PREMIUM ÜYE' : ''}</span></li>
                   <li><button onClick={handleLogout} className="auth-link logout-button">Çıkış Yap</button></li>
                 </>
               )}
