@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/authContext';
 import Layout from './components/Layout';
 import Anasayfa from './components/Anasayfa';
-import BedavaIcerikler from './components/BedavaIcerikler';
 import Foto from './components/Foto';
 import Video from './components/Video';
 import Premium from './components/Premium';
@@ -22,7 +21,6 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Anasayfa />} />
-            <Route path="/bedava-icerikler" element={<BedavaIcerikler />} />
             <Route path="/foto" element={<Foto />} />
             <Route path="/video" element={<Video />} />
             <Route path="/premium" element={<Premium />} />

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Header.css';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from './AuthContext';
 import { logout } from '../services/authService';
 
 function Header() {
