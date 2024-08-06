@@ -192,6 +192,26 @@ h1, h2 {
   margin-top: 2rem;
 }
 
+#ensoniceriktext {
+  background-color: var(--primary-color);  
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 1.5rem 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+#ensoniceriktext:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-3px);
+}
+
 @media (max-width: 768px) {
   .nav-button {
     padding: 0.5rem 1rem;

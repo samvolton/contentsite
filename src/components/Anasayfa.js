@@ -29,20 +29,19 @@ function Anasayfa() {
     try {
       setLoading(true);
       const response = await axios.get('http://localhost:5000/api/media/anasayfa');
-      console.log('Anasayfa response:', response.data);
       const images = response.data.filter(item => item && item.contentType && item.contentType.startsWith('image'));
       const videos = response.data.filter(item => item && item.contentType && item.contentType.startsWith('video'));
       setContent({ images, videos });
     } catch (error) {
-      console.error('Error fetching content:', error);
-      setError('Failed to fetch content. Please try again later.');
+      console.error('İçerik yüklenirken hata oluştu:', error);
+      setError('İçerik yüklenemedi. Lütfen daha sonra tekrar deneyin!');
     } finally {
       setLoading(false);
     }
   };
 
   const handleContentClick = (item) => {
-    if (item.premium) {
+  if (item.premium) {
       navigate('/premium');
     } else {
       setModalContent(item);
@@ -55,13 +54,13 @@ function Anasayfa() {
     setModalContent(null);
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <div className="loading">Yükleniyor...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="anasayfa">
       <h1>Hoş Geldiniz</h1>
-      <p>En son içeriklerimize göz atın.</p>
+      <p id="ensoniceriktext">En son içeriklerimize göz atın.</p>
 
       <section className="content-section">
         <h2>Fotoğraflar ({content.images.length})</h2>

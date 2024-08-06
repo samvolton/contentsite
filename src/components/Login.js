@@ -29,10 +29,10 @@ const Login = () => {
           navigate('/');
         }, 1500);
       } else {
-        setError('Login failed. Please check your credentials and try again.');
+        setError('Email veya şifre hatalı. Lütfen kontrol ederek tekrar deneyin.');
       }
     } catch (err) {
-      setError('An error occurred during login. Please try again later.');
+      setError('Bir hata oluştu. Lütfen daha sonra tekrar deneyin!');
       console.error('Login error:', err);
     } finally {
       setIsLoading(false);
@@ -41,10 +41,10 @@ const Login = () => {
 
   return (
     <div className="login">
-      <h1>Login</h1>
+      <h1>Giriş Yap</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">Eposta</label>
           <input
             type="email"
             id="email"
@@ -55,7 +55,7 @@ const Login = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Şifre</label>
           <input
             type="password"
             id="password"
