@@ -27,7 +27,7 @@ router.post('/', auth, upload.any(), (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
-
+  const category = req.body.category || 'general';
   const file = req.files[0];
   const { buffer, originalname, mimetype } = file;
   const isAnasayfa = req.body.isAnasayfa === 'true'; // Add this line to get isAnasayfa from request body
@@ -45,7 +45,8 @@ router.post('/', auth, upload.any(), (req, res) => {
         uploadDate: new Date(),
         fileId: writestream.id,
         userId: req.user ? req.user._id : null,
-        isAnasayfa: isAnasayfa // Use the isAnasayfa value from request
+        category: category,
+        isAnasayfa: category === 'anasayfa'
       });
       await media.save();
       res.status(200).json({ fileId: writestream.id, isAnasayfa: isAnasayfa });
@@ -82,7 +83,8 @@ router.post('/anasayfa', auth, upload.any(), (req, res) => {
         uploadDate: new Date(),
         fileId: writestream.id,
         userId: req.user ? req.user._id : null,
-        isAnasayfa: true // Set to true for Anasayfa content
+        category: 'anasayfa',
+        isAnasayfa: true
       });
       await media.save();
       res.status(200).json({ fileId: writestream.id });
@@ -97,9 +99,9 @@ router.post('/anasayfa', auth, upload.any(), (req, res) => {
 });
 
 // Route to fetch Anasayfa content
-router.get('/anasayfa', async (req, res) => {
+router.get('/anasayfa', async (req, res, page) => {
   try {
-    const anasayfaContent = await Media.find({ isAnasayfa: true }).sort({ uploadDate: -1 }).limit(32);
+    const anasayfaContent = await Media.find({ category: 'anasayfa' }).sort({ uploadDate: -1 }).limit(32);
     res.json(anasayfaContent);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch Anasayfa content' });
@@ -115,12 +117,12 @@ router.get('/foto', async (req, res) => {
   try {
     const photos = await Media.find({ 
       contentType: { $regex: /^image/ },
-      isAnasayfa: { $ne: true }
+      category: { $ne: 'anasayfa' }
     }).sort({ uploadDate: -1 }).skip(skip).limit(limit);
     
     const total = await Media.countDocuments({ 
       contentType: { $regex: /^image/ },
-      isAnasayfa: { $ne: true }
+      category: { $ne: 'anasayfa' }
     });
 
     res.json({
@@ -142,12 +144,12 @@ router.get('/video', async (req, res) => {
   try {
     const videos = await Media.find({ 
       contentType: { $regex: /^video/ },
-      isAnasayfa: { $ne: true }
+      category: { $ne: 'anasayfa' }
     }).sort({ uploadDate: -1 }).skip(skip).limit(limit);
     
     const total = await Media.countDocuments({ 
       contentType: { $regex: /^video/ },
-      isAnasayfa: { $ne: true }
+      category: { $ne: 'anasayfa' }
     });
 
     res.json({

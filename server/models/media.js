@@ -8,6 +8,7 @@ const mediaSchema = new mongoose.Schema({
   fileId: { type: mongoose.Schema.Types.ObjectId, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
   premium: { type: Boolean, default: false },
+  category: {type: 'String', default: 'general'},
   isAnasayfa: { type: Boolean, default: false }
 });
 

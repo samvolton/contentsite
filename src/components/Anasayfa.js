@@ -29,7 +29,7 @@ function Anasayfa() {
     try {
       setLoading(true);
       const response = await axios.get('http://localhost:5000/api/media/anasayfa');
-      console.log('Anasayfa response:', response.data);  
+      console.log('Anasayfa response:', response.data);
       const images = response.data.filter(item => item && item.contentType && item.contentType.startsWith('image'));
       const videos = response.data.filter(item => item && item.contentType && item.contentType.startsWith('video'));
       setContent({ images, videos });
@@ -40,7 +40,7 @@ function Anasayfa() {
       setLoading(false);
     }
   };
-  
+
   const handleContentClick = (item) => {
     if (item.premium) {
       navigate('/premium');
@@ -66,16 +66,16 @@ function Anasayfa() {
       <section className="content-section">
         <h2>Fotoğraflar ({content.images.length})</h2>
         <div className="content-slider">
-        {content.images.map((item) => item && (
-  <div key={item._id} className="content-item" onClick={() => handleContentClick(item)}>
-    <img
-      src={`http://localhost:5000/files/${item.filename}`}
-      alt={item.filename}
-      className={item.premium ? 'blurred' : ''}
-    />
-    {item.premium && <span className="premium-badge">Premium</span>}
-  </div>
-))}
+          {content.images.map((item) => (
+            <div key={item._id} className="content-item" onClick={() => handleContentClick(item)}>
+              <img
+                src={`http://localhost:5000/files/${item.filename}`}
+                alt={item.filename}
+                className={item.premium ? 'blurred' : ''}
+              />
+              {item.premium && <span className="premium-badge">Premium</span>}
+            </div>
+          ))}
         </div>
       </section>
 
