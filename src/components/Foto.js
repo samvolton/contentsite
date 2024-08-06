@@ -11,29 +11,29 @@ function Foto() {
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isAuthenticated, isPremium } = useContext(AuthContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const fetchPhotos = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/media');
-      const photos = response.data.filter(item => 
-        item && 
-        item.contentType && 
-        typeof item.contentType === 'string' && 
-        item.contentType.startsWith('image')
-      );
-      setPhotos(photos);
+      const response = await axios.get(`http://localhost:5000/api/media/foto?page=${currentPage}`);
+      setPhotos(response.data.photos);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error('Error fetching photos:', error);
       setError('Failed to fetch photos. Please try again later.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     fetchPhotos();
   }, [fetchPhotos, isAuthenticated, isPremium]);
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
 
   const handlePhotoClick = (photo) => {
     if (isAuthenticated && isPremium) {
@@ -80,6 +80,18 @@ function Foto() {
           isPremium={isPremium} 
         />
       )}
+
+      <div className="pagination">
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+          <button
+            key={page}
+            onClick={() => handlePageChange(page)}
+            disabled={page === currentPage}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

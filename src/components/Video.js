@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import PremiumModal from './PremiumModal';
 import { AuthContext } from '../context/authContext';
@@ -11,28 +11,28 @@ function Video() {
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isAuthenticated, isPremium } = useContext(AuthContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    fetchVideos();
-  }, [isAuthenticated, isPremium]);
-
-
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/media');
-      const videos = response.data.filter(item => 
-        item && 
-        item.contentType && 
-        typeof item.contentType === 'string' && 
-        item.contentType.startsWith('video')
-      );
-      setVideos(videos);
+      const response = await axios.get(`http://localhost:5000/api/media/video?page=${currentPage}`);
+      setVideos(response.data.videos);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error('Error fetching videos:', error);
       setError('Failed to fetch videos. Please try again later.');
     } finally {
       setLoading(false);
     }
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchVideos();
+  }, [fetchVideos, isAuthenticated, isPremium]);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   const handleVideoClick = (video) => {
@@ -80,6 +80,18 @@ function Video() {
           isPremium={isPremium} 
         />
       )}
+
+      <div className="pagination">
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+          <button
+            key={page}
+            onClick={() => handlePageChange(page)}
+            disabled={page === currentPage}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

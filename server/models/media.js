@@ -7,7 +7,8 @@ const mediaSchema = new mongoose.Schema({
   uploadDate: { type: Date, default: Date.now },
   fileId: { type: mongoose.Schema.Types.ObjectId, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
-  premium: { type: Boolean, default: false }
+  premium: { type: Boolean, default: false },
+  isAnasayfa: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('Media', mediaSchema);
