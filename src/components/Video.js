@@ -3,6 +3,7 @@ import axios from 'axios';
 import PremiumModal from './PremiumModal';
 import { AuthContext } from '../context/authContext';
 import './Video.css';
+import './Pagination.css';
 
 function Video() {
   const [videos, setVideos] = useState([]);
@@ -32,14 +33,16 @@ function Video() {
   }, [fetchVideos, isAuthenticated, isPremium]);
 
   const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
   const handleVideoClick = (video) => {
     if (isAuthenticated && isPremium) {
       setModalContent(video);
     } else {
-      setModalContent({ type: 'premium' }); // Provide a type to handle premium modal content
+      setModalContent({ type: 'premium' });
     }
     setIsModalOpen(true);
   };
@@ -82,15 +85,29 @@ function Video() {
       )}
 
       <div className="pagination">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+        <button 
+          onClick={() => handlePageChange(currentPage - 1)} 
+          disabled={currentPage === 1}
+          className="pagination-button"
+        >
+          Previous
+        </button>
+        {[...Array(totalPages).keys()].map((number) => (
           <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            disabled={page === currentPage}
+            key={number + 1}
+            onClick={() => handlePageChange(number + 1)}
+            className={`pagination-button ${currentPage === number + 1 ? 'active' : ''}`}
           >
-            {page}
+            {number + 1}
           </button>
         ))}
+        <button 
+          onClick={() => handlePageChange(currentPage + 1)} 
+          disabled={currentPage === totalPages}
+          className="pagination-button"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import axios from 'axios';
 import PremiumModal from './PremiumModal';
 import { AuthContext } from '../context/authContext';
 import './Foto.css';
+import './Pagination.css';
 
 function Foto() {
   const [photos, setPhotos] = useState([]);
@@ -32,7 +33,9 @@ function Foto() {
   }, [fetchPhotos, isAuthenticated, isPremium]);
 
   const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
   const handlePhotoClick = (photo) => {
@@ -82,15 +85,29 @@ function Foto() {
       )}
 
       <div className="pagination">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+        <button 
+          onClick={() => handlePageChange(currentPage - 1)} 
+          disabled={currentPage === 1}
+          className="pagination-button"
+        >
+          Previous
+        </button>
+        {[...Array(totalPages).keys()].map((number) => (
           <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            disabled={page === currentPage}
+            key={number + 1}
+            onClick={() => handlePageChange(number + 1)}
+            className={`pagination-button ${currentPage === number + 1 ? 'active' : ''}`}
           >
-            {page}
+            {number + 1}
           </button>
         ))}
+        <button 
+          onClick={() => handlePageChange(currentPage + 1)} 
+          disabled={currentPage === totalPages}
+          className="pagination-button"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
