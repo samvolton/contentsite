@@ -5,7 +5,7 @@ export const sendVerificationEmail = async (email, amount) => {
     const response = await axios.post('/auth/send-verification-email', { email, amount });
     return response.data;
   } catch (error) {
-    console.error('Error sending verification email:', error);
+    console.error('Email gönderim hatası:', error);
     throw error;
   }
 };
