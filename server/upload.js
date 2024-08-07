@@ -16,10 +16,7 @@ conn.once('open', () => {
 const storage = multer.memoryStorage();
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 * 512}, // Limit file size to 500MB
-  fileFilter: (req, file, cb) => {
-    cb(null, true); // Accept all files
-  }
+  limits: { fileSize: 500 * 1024 * 1024 },  
 });
 
 // Modified general upload route
@@ -59,6 +56,50 @@ router.post('/', auth, upload.any(), (req, res) => {
     res.status(500).json({ error: 'An error occurred while uploading the file', details: err.message });
   });
 });
+
+
+// Add the new batch upload route
+router.post('/batch', auth, upload.array('files', 200), async (req, res) => {
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({ error: 'No files uploaded' });
+  }
+
+  const category = req.body.category || 'general';
+  const uploadResults = [];
+
+  for (const file of req.files) {
+    const { buffer, originalname, mimetype } = file;
+
+    try {
+      const writestream = bucket.openUploadStream(originalname, { contentType: mimetype });
+      
+      await new Promise((resolve, reject) => {
+        writestream.end(buffer);
+        writestream.on('finish', resolve);
+        writestream.on('error', reject);
+      });
+
+      const media = new Media({
+        filename: originalname,
+        contentType: mimetype,
+        length: buffer.length,
+        uploadDate: new Date(),
+        fileId: writestream.id,
+        userId: req.user._id,
+        category: category,
+        isAnasayfa: category === 'anasayfa'
+      });
+
+      await media.save();
+      uploadResults.push({ file: originalname, status: 'success' });
+    } catch (error) {
+      uploadResults.push({ file: originalname, status: 'failed', error: error.message });
+    }
+  }
+
+  res.status(200).json(uploadResults);
+});
+
 
 
 // Route for Anasayfa content

@@ -35,10 +35,10 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/contentSi
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json({ limit: '500mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '500mb' }));
+app.use(express.json({ limit: '500mb' }));
 app.use('/files', filesRouter);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -57,6 +57,12 @@ app.use('/api/media', uploadRouter);
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Content Site API');
+});
+
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log('Headers:', req.headers);
+  next();
 });
 
 // Fetch all media data (consider paginating this in the future)
@@ -101,6 +107,13 @@ app.use((err, req, res, next) => {
     message: 'An error occurred on the server',
     error: process.env.NODE_ENV === 'production' ? {} : err.message
   });
+});
+
+// Add this to your server.js or appropriate route file
+app.post('/api/media/batch', auth, (req, res) => {
+  console.log('Received files:', req.files);
+  console.log('Received body:', req.body);
+  res.json({ message: 'Batch upload received', filesCount: req.files ? req.files.length : 0 });
 });
 
 // Start the server
