@@ -4,7 +4,12 @@ const FormData = require('form-data');
 const path = require('path');
 
 const API_URL = 'http://localhost:5000/api/media/batch';
-const TOKEN = process.env.AUTH_TOKEN || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmFjZDc4M2U2ZjhkZDNkYjIyNjI1YjEiLCJpYXQiOjE3MjMwMzUyODd9.yFJfKQiPmujw5P2HdoqOs9WGInwmExQYEJs02Zex5ks';
+const TOKEN = process.env.AUTH_TOKEN;
+
+if (!TOKEN) {
+  console.error('No AUTH_TOKEN provided in environment variables');
+  process.exit(1);
+}
 
 async function performBatchUpload(folderPath, category) {
   try {
