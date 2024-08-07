@@ -53,6 +53,7 @@ const Register = () => {
     setMessage('');
     try {
       const { confirmPassword, ...registerData } = formData;
+      // eslint-disable-next-line no-unused-vars
       const data = await register(registerData);
       setMessage('Kayıt Başarılı!');
       // Redirect to login page or automatically log the user in
