@@ -60,7 +60,7 @@ function Anasayfa() {
   return (
     <div className="anasayfa">
       <h1>Hoş Geldiniz</h1>
-      <p id="ensoniceriktext">En son içeriklerimize göz atın.</p>
+      <p id="ensoniceriktext">Ücretsiz içeriklerimize göz atın.</p>
 
       <section className="content-section">
         <h2>Fotoğraflar ({content.images.length})</h2>
