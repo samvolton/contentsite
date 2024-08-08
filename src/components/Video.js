@@ -17,7 +17,7 @@ function Video() {
 
   const fetchVideos = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/media/video?page=${currentPage}`);
+      const response = await axios.get(`https://contentsite-production.up.railway.app/api/media/video?page=${currentPage}`);
       setVideos(response.data.videos);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -66,7 +66,7 @@ function Video() {
         {videos.map(video => (
           <div key={video._id} className="video-item" onClick={() => handleVideoClick(video)}>
             <video 
-              src={`http://localhost:5000/files/${video.filename}`} 
+              src={`https://contentsite-production.up.railway.app/files/${video.filename}`} 
               className={isAuthenticated && isPremium ? '' : 'blurred'}
               controls
             />

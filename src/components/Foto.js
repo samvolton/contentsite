@@ -17,7 +17,7 @@ function Foto() {
 
   const fetchPhotos = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/media/foto?page=${currentPage}`);
+      const response = await axios.get(`https://contentsite-production.up.railway.app/api/media/foto?page=${currentPage}`);
       setPhotos(response.data.photos);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -66,7 +66,7 @@ function Foto() {
         {photos.map(photo => (
           <div key={photo._id} className="photo-item" onClick={() => handlePhotoClick(photo)}>
             <img 
-              src={`http://localhost:5000/files/${photo.filename}`} 
+              src={`https://contentsite-production.up.railway.app/files/${photo.filename}`} 
               alt={photo.title || 'Untitled'} 
               className={isAuthenticated && isPremium ? '' : 'blurred'}
             />

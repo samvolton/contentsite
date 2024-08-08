@@ -28,7 +28,7 @@ function Anasayfa() {
   const fetchContent = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/media/anasayfa');
+      const response = await axios.get('https://contentsite-production.up.railway.app/api/media/anasayfa'); // Correct URL
       const images = response.data.filter(item => item && item.contentType && item.contentType.startsWith('image'));
       const videos = response.data.filter(item => item && item.contentType && item.contentType.startsWith('video'));
       setContent({ images, videos });
