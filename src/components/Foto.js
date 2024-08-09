@@ -17,7 +17,7 @@ function Foto() {
 
   const fetchPhotos = useCallback(async () => {
     try {
-      const response = await axios.get(`https://contentsite-production.up.railway.app/api/media/foto?page=${currentPage}`);
+      const response = await axios.get(`http://localhost:5000/api/media/foto?page=${currentPage}`);
       setPhotos(response.data.photos);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -56,6 +56,40 @@ function Foto() {
     e.preventDefault();
   };
 
+  const renderPaginationButtons = () => {
+    const pageNumbers = [];
+    const ellipsis = <span className="pagination-ellipsis">...</span>;
+
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pageNumbers.push(1, 2, 3, 4, ellipsis, totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1, ellipsis, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pageNumbers.push(1, ellipsis, currentPage - 1, currentPage, currentPage + 1, ellipsis, totalPages);
+      }
+    }
+
+    return pageNumbers.map((number, index) => (
+      <React.Fragment key={index}>
+        {number === ellipsis ? (
+          ellipsis
+        ) : (
+          <button
+            onClick={() => handlePageChange(number)}
+            className={`pagination-button ${currentPage === number ? 'active' : ''}`}
+          >
+            {number}
+          </button>
+        )}
+      </React.Fragment>
+    ));
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
@@ -66,7 +100,7 @@ function Foto() {
         {photos.map(photo => (
           <div key={photo._id} className="photo-item" onClick={() => handlePhotoClick(photo)}>
             <img 
-              src={`https://contentsite-production.up.railway.app/files/${photo.filename}`} 
+              src={`http://localhost:5000/files/${photo.filename}`} 
               alt={photo.title || 'Untitled'} 
               className={isAuthenticated && isPremium ? '' : 'blurred'}
             />
@@ -92,15 +126,7 @@ function Foto() {
         >
           Previous
         </button>
-        {[...Array(totalPages).keys()].map((number) => (
-          <button
-            key={number + 1}
-            onClick={() => handlePageChange(number + 1)}
-            className={`pagination-button ${currentPage === number + 1 ? 'active' : ''}`}
-          >
-            {number + 1}
-          </button>
-        ))}
+        {renderPaginationButtons()}
         <button 
           onClick={() => handlePageChange(currentPage + 1)} 
           disabled={currentPage === totalPages}

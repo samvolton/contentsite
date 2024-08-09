@@ -1,4 +1,3 @@
-// server/services/emailService.js
 const formData = require('form-data');
 const Mailgun = require('mailgun.js');
 const config = require('../config');

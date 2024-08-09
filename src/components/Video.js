@@ -17,7 +17,7 @@ function Video() {
 
   const fetchVideos = useCallback(async () => {
     try {
-      const response = await axios.get(`https://contentsite-production.up.railway.app/api/media/video?page=${currentPage}`);
+      const response = await axios.get(`http://localhost:5000/api/media/video?page=${currentPage}`);
       setVideos(response.data.videos);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -56,6 +56,40 @@ function Video() {
     e.preventDefault();
   };
 
+  const renderPaginationButtons = () => {
+    const pageNumbers = [];
+    const ellipsis = <span className="pagination-ellipsis">...</span>;
+
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pageNumbers.push(1, 2, 3, 4, ellipsis, totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1, ellipsis, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pageNumbers.push(1, ellipsis, currentPage - 1, currentPage, currentPage + 1, ellipsis, totalPages);
+      }
+    }
+
+    return pageNumbers.map((number, index) => (
+      <React.Fragment key={index}>
+        {number === ellipsis ? (
+          ellipsis
+        ) : (
+          <button
+            onClick={() => handlePageChange(number)}
+            className={`pagination-button ${currentPage === number ? 'active' : ''}`}
+          >
+            {number}
+          </button>
+        )}
+      </React.Fragment>
+    ));
+  };
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
@@ -66,7 +100,7 @@ function Video() {
         {videos.map(video => (
           <div key={video._id} className="video-item" onClick={() => handleVideoClick(video)}>
             <video 
-              src={`https://contentsite-production.up.railway.app/files/${video.filename}`} 
+              src={`http://localhost:5000/files/${video.filename}`} 
               className={isAuthenticated && isPremium ? '' : 'blurred'}
               controls
             />
@@ -92,15 +126,7 @@ function Video() {
         >
           Previous
         </button>
-        {[...Array(totalPages).keys()].map((number) => (
-          <button
-            key={number + 1}
-            onClick={() => handlePageChange(number + 1)}
-            className={`pagination-button ${currentPage === number + 1 ? 'active' : ''}`}
-          >
-            {number + 1}
-          </button>
-        ))}
+        {renderPaginationButtons()}
         <button 
           onClick={() => handlePageChange(currentPage + 1)} 
           disabled={currentPage === totalPages}

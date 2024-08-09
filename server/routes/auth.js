@@ -2,7 +2,6 @@ const express = require('express');
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { sendVerificationEmail } = require('../services/emailService');
 
