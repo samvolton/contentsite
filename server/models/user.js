@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function() { return this.isVerified; },
     minlength: 7
   },
   isVerified: {

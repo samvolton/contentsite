@@ -52,7 +52,8 @@ router.post('/initiate-payment', async (req, res) => {
       isVerified: false,
       isPaid: false,
       paymentAmount: amount,
-      paymentStatus: 'pending'
+      paymentStatus: 'pending',
+      password: crypto.randomBytes(16).toString('hex') // Temporary password
     });
     await user.save();
 
