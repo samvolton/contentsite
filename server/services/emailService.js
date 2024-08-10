@@ -28,7 +28,10 @@ const sendVerificationEmail = async (email, verificationToken, amount) => {
   console.log('Amount:', amount);
   console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 
-  const verificationLink = `${process.env.FRONTEND_URL}/register?token=${encodeURIComponent(verificationToken)}&email=${encodeURIComponent(email)}`;
+  const frontendUrl = process.env.FRONTEND_URL.endsWith('/') 
+  ? process.env.FRONTEND_URL.slice(0, -1) 
+  : process.env.FRONTEND_URL;
+  const verificationLink = `${frontendUrl}/register?token=${encodeURIComponent(verificationToken)}&email=${encodeURIComponent(email)}`;
   console.log('Verification link:', verificationLink);
 
   const data = {
@@ -78,7 +81,10 @@ const sendPaymentConfirmationEmail = async (email, verificationToken) => {
   console.log('Preparing to send payment confirmation email');
   console.log('Email:', email);
 
-  const verificationLink = `${process.env.FRONTEND_URL}/register?token=${encodeURIComponent(verificationToken)}&email=${encodeURIComponent(email)}`;
+  const frontendUrl = process.env.FRONTEND_URL.endsWith('/') 
+  ? process.env.FRONTEND_URL.slice(0, -1) 
+  : process.env.FRONTEND_URL;
+  const verificationLink = `${frontendUrl}/register?token=${encodeURIComponent(verificationToken)}&email=${encodeURIComponent(email)}`;
   console.log('Verification link:', verificationLink);
 
   const data = {
